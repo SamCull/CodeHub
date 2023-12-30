@@ -1,6 +1,6 @@
 # CodeEditor - Automated Coding Exam Correction Platform
-## CodeEditor is a user-friendly platform designed for automated coding exam correction. This platform streamlines the process of conducting coding exams, providing a seamless experience for both instructors and users. With CodeEditor, you can log in, register an account, and participate in various coding exams. The platform allows you to compile your code and automatically compare it to a predefined sample code, providing you with a score based on similarity.
-
+### CodeEditor is a user-friendly platform designed for automated coding exam correction. This platform streamlines the process of conducting coding exams, providing a seamless experience for both instructors and users. With CodeEditor, you can log in, register an account, and participate in various coding exams. The platform allows you to compile your code and automatically compare it to a predefined sample code, providing you with a score based on similarity.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ### Features
 User Authentication: Easily log in or register an account to access the platform.
 
