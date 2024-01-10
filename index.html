@@ -42,7 +42,7 @@
                 <header>Login</header>
             </div>
             <div class="input-box">
-                <input type="text" class="input-field" placeholder="Username or Email">
+                <input type="text" class="input-field" placeholder="Email">
                 <i class="bx bx-user"></i>
             </div>
             <div class="input-box">
@@ -81,7 +81,7 @@
                     </div>
                 </div>
                 <div class="input-box">
-                    <input type="text" class="input-field" placeholder="Email" name="email">
+                    <input type="email" class="input-field" placeholder="Email" name="email">
                     <i class="bx bx-envelope"></i>
                 </div>
                 <div class="input-box">
@@ -142,7 +142,32 @@
         x.style.opacity = 0;
         y.style.opacity = 1;
     }
+    async function registerUser(event) {
+        event.preventDefault();
 
+        const firstname = document.querySelector('[name="firstname"]').value;
+        const lastname = document.querySelector('[name="lastname"]').value;
+        const email = document.querySelector('[name="email"]').value;
+        const password = document.querySelector('[name="password"]').value;
+
+        // Send registration data to the server
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ firstname, lastname, email, password }),
+        });
+
+        // Check if registration was successful
+        if (response.ok) {
+            // Redirect to the success page or handle as needed
+            window.location.href = 'success.html';
+        } else {
+            // Handle registration error
+            window.location.href = 'success.html';
+        }
+    }
 </script>
 
 </body>
