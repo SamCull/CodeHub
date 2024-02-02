@@ -13,6 +13,10 @@ Automated Comparison: Submit your code to be automatically compared to a predefi
 Scoring System: Receive a score based on the similarity of your code to the sample, facilitating effective learning and evaluation.
 
 ### How It Works
+
+https://github.com/SamCull/CodeHub/assets/72495319/864c0cc6-19dc-4c9c-84f2-f6cfa505aa8f
+
+
 User Registration and Login:
 Create a new account or log in to your existing account.
 
