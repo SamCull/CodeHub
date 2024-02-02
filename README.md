@@ -23,31 +23,20 @@ This section lists the major frameworks/libraries used in the project.
 * ![Static Badge](https://img.shields.io/badge/MONGO-darkgreen)
 * ![Static Badge](https://img.shields.io/badge/NETLIFY-skyblue)
 
-
-
-
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 ### How It Works
-
 https://github.com/SamCull/CodeHub/assets/72495319/864c0cc6-19dc-4c9c-84f2-f6cfa505aa8f
 
-
 User Registration and Login:
-Create a new account or log in to your existing account.
+* Create a new account or log in to your existing account.
 
 ### Coding Exams:
-Browse available coding exams and choose the ones you want to take.
+* Browse available coding exams and choose the ones you want to take.
 
 ### Code Compilation:
-Write your code directly on the platform and compile it for testing.
+* Write your code directly on the platform and compile it for testing.
 
 ### Automated Comparison:
-Submit your code for automated comparison to a predefined sample.
+* Submit your code for automated comparison to a predefined sample.
 
 ### Score and Feedback:
-Receive a score based on the similarity of your code to the sample, along with feedback.
+* Receive a score based on the similarity of your code to the sample, along with feedback.
