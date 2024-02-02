@@ -15,13 +15,14 @@ Scoring System: Receive a score based on the similarity of your code to the samp
 
 This section should list any major technologies and tools used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
-* [![HTML][HTML]][HTML-url]
-* [![CSS][CSS]][CSS-url]
-* [![JavaScript][JavaScript]][JavaScript-url]
-* [![Node.js][Node.js]][Node.js-url]
-* [![PHP][PHP]][PHP-url]
-* [![MongoDB][MongoDB]][MongoDB-url]
-* [![Netlify][Netlify]][Netlify-url]
+* ![download](https://github.com/SamCull/CodeHub/assets/72495319/8c7f6662-e86b-4052-9936-61344b64960d)
+* ![download](https://github.com/SamCull/CodeHub/assets/72495319/47d79e4b-0f94-4e01-966e-0bf39c990968)
+*![download](https://github.com/SamCull/CodeHub/assets/72495319/3c84cdf9-e160-48d2-bfe6-da9805a05489)
+*![download](https://github.com/SamCull/CodeHub/assets/72495319/3672086e-5120-43ae-9475-ef8809718853)
+*![download](https://github.com/SamCull/CodeHub/assets/72495319/591b0234-1696-4ba4-87ab-404eb8d2efe6)
+*![download](https://github.com/SamCull/CodeHub/assets/72495319/50d2072a-bcb1-4a81-832e-a67b0520bfcb)
+*![download](https://github.com/SamCull/CodeHub/assets/72495319/f7dc4257-1480-4a55-a5a7-3c1a8c0cd0b4)
+*
 
 
 ### How It Works
