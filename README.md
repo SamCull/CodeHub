@@ -26,7 +26,7 @@ This section lists the major frameworks/libraries used in the project.
 ### How It Works
 https://github.com/SamCull/CodeHub/assets/72495319/864c0cc6-19dc-4c9c-84f2-f6cfa505aa8f
 
-User Registration and Login:
+### User Registration and Login:
 * Create a new account or log in to your existing account.
 
 ### Coding Exams:
