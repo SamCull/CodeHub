@@ -14,8 +14,22 @@ Scoring System: Receive a score based on the similarity of your code to the samp
 ### Built With
 
 This section should list any major technologies and tools used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+### Built With
+This section lists the major frameworks/libraries used in the project. 
+* ![Static Badge](https://img.shields.io/badge/HTML-red)
+* ![Static Badge](https://img.shields.io/badge/CSS-blue)
+* ![Static Badge](https://img.shields.io/badge/JAVASCRIPT-orange)
+* ![Static Badge](https://img.shields.io/badge/PYTHON-blue)
+* ![Static Badge](https://img.shields.io/badge/MONGO-darkgreen)
+* ![Static Badge](https://img.shields.io/badge/NETLIFY-skyblue)
 
-![Static Badge](https://img.shields.io/badge/html-red)
+
+
+
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 
 ### How It Works
