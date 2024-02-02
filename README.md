@@ -14,16 +14,7 @@ Scoring System: Receive a score based on the similarity of your code to the samp
 ### Built With
 
 This section should list any major technologies and tools used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-* [![HTML][HTML.html]][Html-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
-*
+import { FaHtml5 } from "react-icons/fa"; </FaHyml5>
 
 
 ### How It Works
