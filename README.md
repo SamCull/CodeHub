@@ -38,3 +38,18 @@ https://github.com/SamCull/CodeHub/assets/72495319/864c0cc6-19dc-4c9c-84f2-f6cfa
 
 ### Score and Feedback:
 * Receive a score based on the similarity of your code to the sample, along with feedback.
+
+### Roadmap
+
+- [x] Website build
+- [x] Lightweight Code Editor working
+- [ ] Find way to collect user's score
+- [ ] Create database linking 
+    - [ ] Users
+    - [ ] Challenges / Languages
+    - [ ] User's scores
+- [ ] Better editor feedback with issues
+
+### Contact
+
+Sam Cullen - samcull2000@gmail.com
