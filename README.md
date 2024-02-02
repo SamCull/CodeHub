@@ -14,7 +14,6 @@ Scoring System: Receive a score based on the similarity of your code to the samp
 ### Built With
 
 This section should list any major technologies and tools used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-import { FaHtml5 } from "react-icons/fa"; </FaHyml5>
 
 
 ### How It Works
