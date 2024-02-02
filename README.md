@@ -11,6 +11,18 @@ Code Compilation: Compile your code directly on the platform for testing and deb
 Automated Comparison: Submit your code to be automatically compared to a predefined sample code.
 
 Scoring System: Receive a score based on the similarity of your code to the sample, facilitating effective learning and evaluation.
+### Built With
+
+This section should list any major technologies and tools used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+
+* [![HTML][HTML]][HTML-url]
+* [![CSS][CSS]][CSS-url]
+* [![JavaScript][JavaScript]][JavaScript-url]
+* [![Node.js][Node.js]][Node.js-url]
+* [![PHP][PHP]][PHP-url]
+* [![MongoDB][MongoDB]][MongoDB-url]
+* [![Netlify][Netlify]][Netlify-url]
+
 
 ### How It Works
 
