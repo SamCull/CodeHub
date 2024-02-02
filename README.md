@@ -15,6 +15,7 @@ Scoring System: Receive a score based on the similarity of your code to the samp
 
 This section should list any major technologies and tools used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
+https://img.shields.io/badge/html-red
 
 ### How It Works
 
