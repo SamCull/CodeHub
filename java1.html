@@ -45,7 +45,7 @@
       <a href="http://127.0.0.1:5500" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
          <img src="../assets/img/logo.png" alt=""> 
-        <h1>CodeHub<span>.</span></h1>
+       
       </a>
 
 
@@ -54,6 +54,16 @@
 
     </div>
 </header>
+ <!-- Question Section -->
+ <div class="container mt-5">
+    <div class="row">
+      <div class="col">
+        <h2 class="text-center">Coding Challenge</h2>
+        <p class="text-center">Write a function that will return a String "Hello". Your output should be "olleH".</p>
+      </div>
+    </div>
+  </div>
+  <!-- End Question Section -->
   <!-- End Header -->
   <div class="row m-3">
       <div class="col">
@@ -85,49 +95,75 @@
           </div>
       </div>
   </div>
+  <script src="testScript.js"></script>
 </body>
 <script>
-  var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
-      mode: "text/x-c++src",
-      theme: "dracula",
-      lineNumbers: true,
-      autoCloseBrackets: true,
+// Creating a CodeMirror editor from the textarea with the ID "editor"
+var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+    mode: "text/x-c++src",  // Setting the initial mode to C++
+    theme: "dracula",  // Setting the theme to "dracula"
+    lineNumbers: true,  // Displaying line numbers
+    autoCloseBrackets: true,  // Automatically closing brackets
+})
 
-  })
-  var width = window.innerWidth
-  var input = document.getElementById("input")
-  var output = document.getElementById("output")
-  var run = document.getElementById("run")
-  editor.setSize(0.7 * width, "500")
-  var option = document.getElementById("inlineFormSelectPref")
-  option.addEventListener("change", function () {
-      if (option.value == "Java") {
-          editor.setOption("mode", "text/x-java")
-      }
-      else if (option.value == "python") {
-          editor.setOption("mode", "text/x-python")
-      }
-      else {
-          editor.setOption("mode", "text/x-c++src")
-      }
-  })
-  var code;
-  run.addEventListener("click", async function () {
-      code = {
-          code: editor.getValue(),
-          input: input.value,
-          lang: option.value
-      }
-      console.log(code)
-      var oData = await fetch("http://localhost:5500/compile", {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify(code)
-      })
-      var d = await oData.json()
-      output.value = d.output
-  })
+// Setting the initial width of the editor to 70% of the window width
+var width = window.innerWidth
+editor.setSize(0.7 * width, "500")
+
+// Getting references to HTML elements
+var input = document.getElementById("input")
+var output = document.getElementById("output")
+var run = document.getElementById("run")
+var option = document.getElementById("inlineFormSelectPref")
+
+// Adding an event listener to the language selection dropdown
+option.addEventListener("change", function () {
+    // Changing the editor mode based on the selected language
+    if (option.value == "Java") {
+        editor.setOption("mode", "text/x-java")
+    } else if (option.value == "python") {
+        editor.setOption("mode", "text/x-python")
+    } else {
+        editor.setOption("mode", "text/x-c++src")
+    }
+})
+
+var code;
+// Adding an event listener to the "Run" button
+run.addEventListener("click", async function () {
+    // Creating a code object with the editor content, input value, and selected language
+    code = {
+        code: editor.getValue(),
+        input: input.value,
+        lang: option.value
+    }
+    console.log(code)
+
+    // Sending a POST request to the server for code compilation
+    try {
+        var oData = await fetch("http://localhost:5500/compile", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(code)
+        });
+
+        // Parsing the response and updating the output textarea
+        var d = await oData.json();
+        output.value = d.output;
+
+        // Check if the output is 'olleH' which is 'Hello' backwards
+        if (d.output.trim() === "olleH") {
+            alert("Correct");
+        } else {
+            alert("Wrong");
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert("Failed to compile and run the code");
+    }
+});
+
 </script>
 </html>
