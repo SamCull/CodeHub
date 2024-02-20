@@ -136,8 +136,14 @@ run.addEventListener("click", async function () {
         code: editor.getValue(),
         input: input.value,
         lang: option.value
+    };
+    console.log(code);
+
+    // Check for hardcoded output
+    if (code.code.includes('print("olleH")') || code.code.includes("print('olleH')")) {
+        alert("Hardcoded output is not allowed!");
+        return;
     }
-    console.log(code)
 
     // Sending a POST request to the server for code compilation
     try {
@@ -153,8 +159,13 @@ run.addEventListener("click", async function () {
         var d = await oData.json();
         output.value = d.output;
 
-        // Check if the output is 'olleH' which is 'Hello' backwards
-        if (d.output.trim() === "olleH") {
+        // Test suite - replace 'functionToTest' with the actual function the user should write
+        const testInput = "Hello";
+        const expectedOutput = "olleH";
+        const userFunctionOutput = d.output.trim(); // You would need to extract the output from the user's function
+
+        // Check if the output is correct for the test input
+        if (userFunctionOutput === expectedOutput) {
             alert("Correct");
         } else {
             alert("Wrong");
