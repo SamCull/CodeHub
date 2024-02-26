@@ -26,11 +26,12 @@ This section lists the major frameworks/libraries used in the project.
 
 - [x] Website build
 - [x] Lightweight Code Editor working
+- [x] Test suites implemented for questions  
 - [ ] Find way to collect user's score
 - [ ] Create database linking 
-    - [ ] Users
+    - [x] Users
     - [ ] Challenges / Languages
-    - [ ] User's scores
+    - [x] User's scores
 - [ ] Better editor feedback with issues
 
 ## Contact
