@@ -18,7 +18,7 @@ This section lists the major frameworks/libraries used in the project.
 * ![Static Badge](https://img.shields.io/badge/CSS-blue)
 * ![Static Badge](https://img.shields.io/badge/JAVASCRIPT-orange)
 * ![Static Badge](https://img.shields.io/badge/PYTHON-blue)
-* ![Static Badge](https://img.shields.io/badge/MYSQL-darkgreen)
+* ![Static Badge](https://img.shields.io/badge/MongoDB-darkgreen)
 * ![Static Badge](https://img.shields.io/badge/NETLIFY-skyblue)
 
 
