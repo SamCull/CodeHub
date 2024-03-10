@@ -11,16 +11,23 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     },
     body: JSON.stringify({ email, password }),
   })
-  .then(response => response.json())
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Failed to log in');
+    }
+  })
   .then(data => {
     if (data.message === "Logged in successfully") {
-      alert('Login successful');
-      // Redirect to homepage or other actions
+      localStorage.setItem('user', data.username); // Store username
+      window.location.href = '/homepage.html'; // Redirect to homepage
     } else {
-      alert('Login failed');
+      alert('Login failed: ' + data.message);
     }
   })
   .catch(error => {
     console.error('Error during login:', error);
+    alert('Login failed: ' + error.message);
   });
 });
