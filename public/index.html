@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Signup Form</title>
+		
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+crossorigin="anonymous"> 
+
+<!-- Custom CSS -->
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin-top: -50px; /* Adjust as needed */
+  }
+
+  .main {
+    background-color: #ffffff;
+    padding: 60px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .main h1 {
+    color: #333;
+    margin-bottom: 30px;
+  }
+
+  .box {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  #submitDetails {
+    width: 100%;
+    background-color: #4C8C6A;
+    color: white;
+    border: none;
+    padding: 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+
+  #submitDetails:hover {
+    background-color: #3a6b52;
+  }
+
+  .btn-info {
+    background-color: #eee;
+    color: #333;
+    border-color: #ddd;
+  }
+
+  .btn-info:hover {
+    background-color: #ddd;
+  }
+
+</style>
+
+</head>
+<body>
+	
+	<div class="container" >
+		<div class="row">
+			<div class="col-md-3">
+				<!-- Intentionally left blank for centering the form -->
+			</div>
+					
+			<div class="col-md-6 main">
+						
+				<form action="http://localhost:5500/sign_up" method="post">				 
+					<h1> Signup Form </h1>
+								
+					<input class="box" type="text" name="name" id="name"
+					placeholder="Name" required /><br>
+								
+					<input class="box" type="email" name="email" id="email"
+					placeholder="E-Mail " required /><br>
+								
+					<input class="box" type="password" name="password"
+					id="password" placeholder="Password " required/><br>
+
+					<br>
+					<input type="submit" id="submitDetails"
+					name="submitDetails" value="Submit" /><br>
+
+					<!-- Login Button -->
+					<p>Already registered?</p>
+					<a href="login.html" class="btn btn-info" role="button">Log In here</a><br>
+							
+				</form>
+						
+			</div>
+					
+			<div class="col-md-3">
+				<!-- Intentionally left blank for centering the form -->
+			</div>
+					
+		</div>
+	</div>
+</body>
+</html>
