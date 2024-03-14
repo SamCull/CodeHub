@@ -16,10 +16,59 @@
 <link rel="stylesheet" href="../codemirror-5.65.16/theme/dracula.css">
 <script src="../codemirror-5.65.16/addon/edit/closebrackets.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+   <!-- Favicons -->
+   <link href="assets/img/favicon.png" rel="icon">
+   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
  
+   <!-- Google Fonts -->
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+ 
+   <!-- Vendor CSS Files -->
+   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+   <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+ 
+   <!-- Template Main CSS File -->
+   <link href="../public/assets/css/main.css" rel="stylesheet">
 
 </head>
 <body>
+
+
+  <header id="header" class="header d-flex align-items-center">
+
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+      <a href="http://127.0.0.1:5500" class="logo d-flex align-items-center">
+        <!-- Uncomment the line below if you also wish to use an image logo 
+         <img src="../assets/img/logo.png" alt=""> --> 
+       
+      </a>
+
+
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+
+    </div>
+</header>
+ <!-- Question Section -->
+ <div class="container mt-5">
+    <div class="row">
+      <div class="col">
+        <h2 class="text-center"><u>Coding Challenge</u></h2>
+        <p class="text-center"></p>
+        <b>Given a string "Hello" write code to return the string reversed</p>
+        The output should return back "olleH"</b>
+      </div>
+    </div>
+  </div>
+  <!-- End Question Section -->
+  <!-- End Header -->
   <div class="row m-3">
       <div class="col">
           <div class="d-flex justify-content-between mb-2 bg-dark rounded p-2">
@@ -50,49 +99,129 @@
           </div>
       </div>
   </div>
+  <script src="testScript.js"></script>
 </body>
 <script>
-  var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
-      mode: "text/x-c++src",
-      theme: "dracula",
-      lineNumbers: true,
-      autoCloseBrackets: true,
+// Creating a CodeMirror editor from the textarea with the ID "editor"
+var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+    mode: "text/x-c++src",  // Setting the initial mode to C++
+    theme: "dracula",  // Setting the theme to "dracula"
+    lineNumbers: true,  // Displaying line numbers
+    autoCloseBrackets: true,  // Automatically closing brackets
+})
 
+// Setting the initial width of the editor to 70% of the window width
+var width = window.innerWidth
+editor.setSize(0.7 * width, "500")
+
+// Getting references to HTML elements
+var input = document.getElementById("input")
+var output = document.getElementById("output")
+var run = document.getElementById("run")
+var option = document.getElementById("inlineFormSelectPref")
+
+// Adding an event listener to the language selection dropdown
+option.addEventListener("change", function () {
+    // Changing the editor mode based on the selected language
+    if (option.value == "Java") {
+        editor.setOption("mode", "text/x-java")
+    } else if (option.value == "python") {
+        editor.setOption("mode", "text/x-python")
+    } else {
+        editor.setOption("mode", "text/x-c++src")
+    }
+})
+
+function loginUser(email) {
+    localStorage.setItem('userEmail', email); 
+}
+function incrementScore() {
+  // Get the user's email from localStorage
+  const userEmail = localStorage.getItem('userEmail');
+
+  if (!userEmail) {
+    console.error('User email is not found in localStorage.');
+    return;
+  }
+
+  // Send the POST request to the server to increment the score
+  fetch('http://localhost:5500/increment-score', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email: userEmail })
   })
-  var width = window.innerWidth
-  var input = document.getElementById("input")
-  var output = document.getElementById("output")
-  var run = document.getElementById("run")
-  editor.setSize(0.7 * width, "500")
-  var option = document.getElementById("inlineFormSelectPref")
-  option.addEventListener("change", function () {
-      if (option.value == "Java") {
-          editor.setOption("mode", "text/x-java")
-      }
-      else if (option.value == "python") {
-          editor.setOption("mode", "text/x-python")
-      }
-      else {
-          editor.setOption("mode", "text/x-c++src")
-      }
+  .then(response => response.json())
+  .then(data => {
+    if (data.message) {
+      alert('Score incremented.');
+    } else {
+      alert('Could not increment score.');
+    }
   })
-  var code;
-  run.addEventListener("click", async function () {
-      code = {
-          code: editor.getValue(),
-          input: input.value,
-          lang: option.value
-      }
-      console.log(code)
-      var oData = await fetch("http://localhost:8000/compile", {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify(code)
-      })
-      var d = await oData.json()
-      output.value = d.output
-  })
+  .catch(error => {
+    console.error('Error incrementing score:', error);
+  });
+}
+
+
+
+
+
+var code;
+
+// Adding an event listener to the "Run" button
+run.addEventListener("click", async function () {
+    // Creating a code object with the editor content, input value, and selected language
+    code = {
+        code: editor.getValue(),
+        input: input.value,
+        lang: option.value
+    };
+    console.log(code);
+
+// Avoid hardcoded solutions
+if (code.code.includes('print("olleH")') || code.code.includes("print('olleH')")) {
+        alert("Hardcoded output is not allowed!");
+        return;
+    }
+
+    // Sending a POST request to the server for code compilation
+    try {
+        const compileResponse = await fetch("http://localhost:5500/compile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(code)
+        });
+
+        if (!compileResponse.ok) {
+            throw new Error('Network response was not ok.');
+        }
+
+        const compileData = await compileResponse.json();
+        output.value = compileData.output.trim(); // Displaying compilation result
+
+        if (output.value === "olleH") {
+            alert("Correct");
+            fetch('/increment-score', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => alert('Error:' + error)); // Increment score if compilation was successful
+        } else {
+            alert("Wrong");
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert("Failed to compile and run the code");
+    }
+});
+
+// Example login function that might run after successful authentication
+function loginUser(email) {
+  localStorage.setItem('userEmail'); 
+    // Redirect to the page with the coding challenge or perform other login success actions
+}
+
 </script>
 </html>
