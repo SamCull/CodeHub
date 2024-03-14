@@ -12,6 +12,10 @@ Automated Comparison: Submit your code to be automatically compared to a predefi
 
 Scoring System: Receive a score based on the similarity of your code to the sample, facilitating effective learning and evaluation.
 
+## Video Demo
+
+https://github.com/SamCull/CodeHub/assets/72495319/7961b384-8dcf-4c19-8709-f9dd02ebaa57
+
 ## Built With
 This section lists the major frameworks/libraries used in the project. 
 * ![Static Badge](https://img.shields.io/badge/HTML-red)
