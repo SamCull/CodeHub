@@ -1,23 +1,39 @@
-var express=require("express");
-var bodyParser=require("body-parser");
 
+const express = require("express");
+var bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/CodeHub');
+
 var db=mongoose.connection;
 db.on('error', console.log.bind(console, "connection error"));
 db.once('open', function(callback){
 	console.log("connection succeeded");
 })
+const compiler = require("compilex");
+const options = { stats: true };
+compiler.init(options);
 
-var app=express()
-
+var app = express();
 
 app.use(bodyParser.json());
-app.use(express.static('public'));
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
+// Serve static files
+app.use("/codemirror-5.65.16", express.static("C:/del/Impact/codemirror-5.65.16"));
+app.use(express.static('public'));
+// Serve static files from the 'challenges' directory
+app.use('/challenges', express.static('challenges'));
 
+var userSchema = new mongoose.Schema({
+    name: String,
+    email: String,
+    password: String,
+    score: Number
+});
+var User = mongoose.model('User', userSchema);
+
+// API routes from Api.js and app.js
 app.post('/sign_up', function(req,res){
 	var name = req.body.name;
 	var email =req.body.email;
@@ -57,46 +73,136 @@ app.post('/login', function(req, res) {
     });
 });
 
-
-app.post('/increment-score', async (req, res) => {
-    try {
-        const userEmail = req.body.email; // Use the email from the request body
-
-        await client.connect();
-        const database = client.db('CodeHub');
-        const collection = database.collection('details');
-
-        const result = await collection.updateOne(
-            { email: userEmail }, // Filter the document by the "email" field
-            { $inc: { score: 1 } } // Increment the "score" field by 1
-        );
-
-        if (result.modifiedCount === 1) {
-            res.json({ message: 'Score incremented for user' });
-        } else {
-            res.json({ message: 'User not found or score already incremented' });
+// POST /increment-score from Api.js
+app.post('/increment-score', function(req, res) {
+    // No need to find the user first since we're using a hard-coded name 'testme'
+    db.collection('details').updateOne(
+        { name: 'testme' },
+        { $inc: { score: 1 } },
+        function(err, result) {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ message: 'Error incrementing score' });
+            } else if (result.modifiedCount === 0) {
+                res.status(404).json({ message: 'User testme not found' });
+            } else {
+                res.json({ message: 'Score incremented successfully!' });
+            }
         }
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error incrementing score');
-    } finally {
-        await client.close();
-    }
+    );
 });
 
+// POST /compile from Api.js
+app.post("/compile", function (req, res) {
+    // Extracting code, input, and language from the request body
+    var code = req.body.code
+    var input = req.body.input
+    var lang = req.body.lang
+    try {
+        // Handling compilation for C++
+        if (lang == "Cpp") {
+            if (!input) {
+                // Compiling C++ code without input
+                var envData = { OS: "windows", cmd: "g++", options: { timeout: 10000 } };
+                compiler.compileCPP(envData, code, function (data) {
+                    if (data.output) {
+                        res.send(data);
+                    }
+                    else {
+                        res.send({ output: "error" })
+                    }
+                });
+            }
+            else {
+                // Compiling C++ code with input
+                var envData = { OS: "windows", cmd: "g++", options: { timeout: 10000 } };
+                compiler.compileCPPWithInput(envData, code, input, function (data) {
+                    if (data.output) {
+                        res.send(data);
+                    }
+                    else {
+                        res.send({ output: "error" })
+                    }
+                });
+            }
+        }
+        // Handling compilation for Java
+        else if (lang == "Java") {
+            if (!input) {
+                // Compiling Java code without input
+                var envData = { OS: "windows" };
+                compiler.compileJava(envData, code, function (data) {
+                    if (data.output) {
+                        res.send(data);
+                    }
+                    else {
+                        res.send({ output: "error" })
+                    }
+                })
+            }
+            else {
+                // Compiling Java code with input
+                var envData = { OS: "windows" };
+                compiler.compileJavaWithInput(envData, code, input, function (data) {
+                    if (data.output) {
+                        res.send(data);
+                    }
+                    else {
+                        res.send({ output: "error" })
+                    }
+                })
+            }
+        }
+        // Handling compilation for Python
+        else if (lang == "Python") {
+            if (!input) {
+                // Compiling Python code without input
+                var envData = { OS: "windows" };
+                compiler.compilePython(envData, code, function (data) {
+                    if (data.output) {
+                        res.send(data);
+                    }
+                    else {
+                        res.send({ output: "error" })
+                    }
+                });
+            }
+            else {
+                // Compiling Python code with input
+                var envData = { OS: "windows" };
+                compiler.compilePythonWithInput(envData, code, input, function (data) {
+                    if (data.output) {
+                        res.send(data);
+                    }
+                    else {
+                        res.send({ output: "error" })
+                    }
+                });
+            }
+        }
+    }
+    // Handling any potential errors
+    catch (e) {
+        console.log("error")
+    }
+})
+
+
+
+// GET / from Api.js
+app.get("/", function (req, res){
+    res.sendFile(__dirname + '/public/index.html');
+});
+
+
+
+
+// GET /homepage.html from app.js
 app.get('/homepage.html', function(req, res) {
     res.sendFile(__dirname + '/public/homepage.html');
 });
 
+// Additional routes...
 
-
-app.get('/',function(req,res){
-res.set({
-	'Access-control-Allow-Origin': '*'
-	});
-return res.redirect('index.html');
-}).listen(3000)
-
-
-
-console.log("server listening at port 3000");
+// Listening on port 5500
+app.listen(5500, () => console.log("Server listening at port 5500"));
