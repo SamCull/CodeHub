@@ -1,4 +1,5 @@
 
+
 const express = require("express");
 var bodyParser = require("body-parser");
 const mongoose = require('mongoose');
@@ -77,7 +78,7 @@ app.post('/login', function(req, res) {
 app.post('/increment-score', function(req, res) {
     // No need to find the user first since we're using a hard-coded name 'testme'
     db.collection('details').updateOne(
-        { name: 'testme' },
+        { name: 'scoreUser' },
         { $inc: { score: 1 } },
         function(err, result) {
             if (err) {
