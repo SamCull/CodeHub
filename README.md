@@ -31,14 +31,10 @@ This section lists the major frameworks/libraries used in the project.
 - [x] Website build
 - [x] Lightweight Code Editor working
 - [x] Test suites implemented for questions  
-- [ ] Find way to collect user's score
+- [x] Find way to collect user's score
 - [ ] Test cases
-- [ ] Create database linking 
+- [x] Create database linking 
     - [x] Users
-    - [ ] Challenges / Languages
+    - [x] Secure passwords
     - [x] User's scores
 - [ ] Better editor feedback with issues
-
-## Contact
-
-Sam Cullen - samcull2000@gmail.com
