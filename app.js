@@ -15,7 +15,14 @@ const options = { stats: true };
 compiler.init(options);
 
 var app = express();
+const session = require('express-session');
 
+app.use(session({
+  secret: 'your_secret_key', // Replace 'your_secret_key' with a real secret key
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: !true } // Set secure to true if you are using https
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: true
@@ -68,24 +75,30 @@ app.post('/login', function(req, res) {
             return res.redirect('/invalidCredentials.html');
         }
 
-        // If the user is found and password matches, redirect to homepage.html
-		res.send({ message: "Logged in successfully", username: user.name });
-       // return res.redirect('/homepage.html');
+        // Store user information in session
+        req.session.user = user;
+        res.send({ message: "Logged in successfully", username: user.name });
     });
 });
 
+
 // POST /increment-score from Api.js
 app.post('/increment-score', function(req, res) {
-    // No need to find the user first since we're using a hard-coded name 'testme'
+    if (!req.session.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const userEmail = req.session.user.email;
+
     db.collection('details').updateOne(
-        { name: 'scoreUser' },
+        { email: userEmail },
         { $inc: { score: 1 } },
         function(err, result) {
             if (err) {
                 console.error(err);
                 res.status(500).json({ message: 'Error incrementing score' });
             } else if (result.modifiedCount === 0) {
-                res.status(404).json({ message: 'User testme not found' });
+                res.status(404).json({ message: 'User not found' });
             } else {
                 res.json({ message: 'Score incremented successfully!' });
             }
