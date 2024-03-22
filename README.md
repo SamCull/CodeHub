@@ -33,8 +33,8 @@ This section lists the major frameworks/libraries used in the project.
 - [x] Test suites implemented for questions  
 - [x] Find way to collect user's score
 - [ ] Test cases
+- [x] Session Management for user score incrementing 
 - [x] Create database linking 
     - [x] Users
     - [x] Secure passwords
     - [x] User's scores
-- [ ] Better editor feedback with issues
