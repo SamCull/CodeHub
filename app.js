@@ -1,5 +1,3 @@
-
-
 const express = require("express");
 var bodyParser = require("body-parser");
 const mongoose = require('mongoose');
@@ -10,6 +8,8 @@ db.on('error', console.log.bind(console, "connection error"));
 db.once('open', function(callback){
 	console.log("connection succeeded");
 })
+
+
 const compiler = require("compilex");
 const options = { stats: true };
 compiler.init(options);
@@ -44,7 +44,7 @@ var User = mongoose.model('User', userSchema);
 // API routes from Api.js and app.js
 app.post('/sign_up', function(req,res){
 	var name = req.body.name;
-	var email =req.body.email;
+	var email = req.body.email;
 	var pass = req.body.password;
 
 	var data = {
@@ -105,6 +105,7 @@ app.post('/increment-score', function(req, res) {
         }
     );
 });
+
 
 // POST /compile from Api.js
 app.post("/compile", function (req, res) {
@@ -216,7 +217,7 @@ app.get('/homepage.html', function(req, res) {
     res.sendFile(__dirname + '/public/homepage.html');
 });
 
-// Additional routes...
+// Additional routes go here
 
 // Listening on port 5500
 app.listen(5500, () => console.log("Server listening at port 5500"));
