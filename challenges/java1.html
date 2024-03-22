@@ -8,6 +8,7 @@
   rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+ 
 
  <script src="../codemirror-5.65.16\mode\python\python.js"></script>
   <link rel="stylesheet" href="../codemirror-5.65.16/lib/codemirror.css">
@@ -15,6 +16,7 @@
 <script src="../codemirror-5.65.16/mode/clike/clike.js"></script>
 <link rel="stylesheet" href="../codemirror-5.65.16/theme/dracula.css">
 <script src="../codemirror-5.65.16/addon/edit/closebrackets.js"></script>
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
    <!-- Favicons -->
    <link href="assets/img/favicon.png" rel="icon">
@@ -31,13 +33,90 @@
    <link href="assets/vendor/aos/aos.css" rel="stylesheet">
    <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-   <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+   <!-- <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
 
- 
+<style>
+body {
+  background-color: #e8f5e9; /* Soft green tint */
+  color: #333333;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Header and Footer */
+.header, footer {
+  background-color: #004d40;
+  color: #ffffff;
+  padding: 1rem 0;
+}
+
+/* Navigation Bar */
+nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 20px;
+}
+
+nav a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* Buttons */
+button, .btn {
+  background-color: #26a69a;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+button:hover, .btn:hover {
+  background-color: darken(#26a69a, 10%);
+}
+
+/* Code Editor Styles */
+#editor {
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* Textareas and Select */
+textarea, select {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box; /* Include padding in the element's total width and height */
+  margin-top: 10px;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .header, .footer {
+    text-align: center;
+  }
+
+  nav ul li {
+    display: block;
+    margin: 5px 0;
+  }
+}
+</style>
    <!-- Template Main CSS File -->
    <link href="../public/assets/css/main.css" rel="stylesheet">
 
 </head>
+
 <body>
 
 
@@ -62,9 +141,8 @@
       <div class="col">
         <h2 class="text-center"><u>Coding Challenge</u></h2>
         <p class="text-center"></p>
-        <b>Given a string "Hello" write code to return the string reversed</p>
-        The output should return back "olleH"</b>
-      </div>
+        <b>"If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.</b>
+        <br>Find the sum of all the multiples of 3 or 5 below 1000."      </div>
     </div>
   </div>
   <!-- End Question Section -->
@@ -181,11 +259,7 @@ run.addEventListener("click", async function () {
     };
     console.log(code);
 
-// Avoid hardcoded solutions
-if (code.code.includes('print("olleH")') || code.code.includes("print('olleH')")) {
-        alert("Hardcoded output is not allowed!");
-        return;
-    }
+
 
     // Sending a POST request to the server for code compilation
     try {
@@ -202,15 +276,23 @@ if (code.code.includes('print("olleH")') || code.code.includes("print('olleH')")
         const compileData = await compileResponse.json();
         output.value = compileData.output.trim(); // Displaying compilation result
 
-        if (output.value === "olleH") {
-            alert("Correct");
-            fetch('/increment-score', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => alert(data.message))
-                .catch(error => alert('Error:' + error)); // Increment score if compilation was successful
-        } else {
-            alert("Wrong");
+        if (output.value.trim() === "233168") {
+    alert("Correct");
+    // Example of sending a POST request to increment the score
+    fetch('/increment-score', {
+        method: 'POST',
+        credentials: 'include', // Important for including session cookies
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.message === 'Score incremented successfully!'){
+            alert('Score incremented successfully!');
         }
+    })
+    .catch(error => console.error('Error incrementing score:', error));
+} else {
+    alert("Incorrect. Please try again.");
+}
     } catch (error) {
         console.error('Error:', error);
         alert("Failed to compile and run the code");
