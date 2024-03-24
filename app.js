@@ -1,5 +1,8 @@
 const express = require("express");
 var bodyParser = require("body-parser");
+const { exec } = require("child_process")
+const fs = require("fs")
+const path = require("path")
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/CodeHub');
 
@@ -170,6 +173,13 @@ app.post("/compile", function (req, res) {
         }
         // Handling compilation for Python
         else if (lang == "Python") {
+            fs.writeFile("multiples.py", code, function(err) {
+                if (err) {
+                    return console.log(err);
+                }
+                console.log("The file was saved!");
+            });
+            
             if (!input) {
                 // Compiling Python code without input
                 var envData = { OS: "windows" };
