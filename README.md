@@ -33,6 +33,7 @@ This section lists the major frameworks/libraries used in the project.
 - [x] Test suites implemented for questions  
 - [x] Find way to collect user's score
 - [ ] Test cases
+- [x] Store user's input as .py file 
 - [x] Session Management for user score incrementing 
 - [x] Create database linking 
     - [x] Users
