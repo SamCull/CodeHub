@@ -142,11 +142,12 @@ textarea, select {
         <h2 class="text-center"><u>Coding Challenge</u></h2>
         <p class="text-center"></p>
         <b>"If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.</b>
-        <br>Find the sum of all the multiples of 3 or 5 below 1000."      </div>
+        <br>Create a function <b><i>"multiples()"</b></i> find the sum of all the multiples of 3 or 5 below 1000."      </div>
     </div>
   </div>
   <!-- End Question Section -->
   <!-- End Header -->
+  <script src="script.js"></script> 
   <div class="row m-3">
       <div class="col">
           <div class="d-flex justify-content-between mb-2 bg-dark rounded p-2">
@@ -162,6 +163,8 @@ textarea, select {
               <div>
                   <button type="button" class="btn btn-success">Coding Sprint</button>
                   <button type="button" id="run" class="btn btn-success"><i class="bi bi-play-fill"></i></button>
+                  <button type="button" id="saveAndTestCode" class="btn btn-warning">Test My Code</button>
+
               </div>
           </div>
           <textarea type="text" id="editor" class="form-control" aria-label="First name"></textarea>
@@ -177,7 +180,7 @@ textarea, select {
           </div>
       </div>
   </div>
-  <script src="testScript.js"></script>
+  <!-- <script src="testScript.js"></script> -->
 </body>
 <script>
 // Creating a CodeMirror editor from the textarea with the ID "editor"
@@ -221,7 +224,10 @@ function incrementScore() {
     console.error('User email is not found in localStorage.');
     return;
   }
+//
+// Function to 
 
+//
   // Send the POST request to the server to increment the score
   fetch('http://localhost:5500/increment-score', {
     method: 'POST',
@@ -305,5 +311,38 @@ function loginUser(email) {
     // Redirect to the page with the coding challenge or perform other login success actions
 }
 
+document.getElementById("saveAndTestCode").addEventListener("click", async function () {
+    const codeContent = {
+        code: editor.getValue()
+    };
+    try {
+        const response = await fetch("/create-function-file", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(codeContent)
+        });
+        const result = await response.json();
+        
+        if (result.message.includes('All tests passed')) {
+            // Assuming the user is logged in and session is established
+            fetch('/increment-score', {
+                method: 'POST',
+                credentials: 'include', // to ensure cookies are sent over
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // "Score incremented successfully!" or error message
+            })
+            .catch(error => console.error('Error incrementing score:', error));
+        } else {
+            alert(result.message); // Show why tests failed
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert("Failed to save and test the code.");
+    }
+});
 </script>
 </html>
