@@ -6,15 +6,18 @@ User Authentication: Easily log in or register an account to access the platform
 
 Coding Exams: Participate in a variety of coding exams to test and enhance your programming skills.
 
-Code Compilation: Compile your code directly on the platform for testing and debugging.
+Code Compilation: Compile your code directly on the platform for testing and results.
 
-Automated Comparison: Submit your code to be automatically compared to a predefined sample code.
+Automated Comparison: Submit your code to be automatically compiled and receive feedback.
 
-Scoring System: Receive a score based on the similarity of your code to the sample, facilitating effective learning and evaluation.
+Scoring System: Receive a score based on all tests passed.
+
+Leaderboard: Store user's details on leaderboard on login
 
 ## Video Demo
 
-https://github.com/SamCull/CodeHub/assets/72495319/7961b384-8dcf-4c19-8709-f9dd02ebaa57
+https://github.com/SamCull/CodeHub/assets/72495319/e913169d-a926-4f98-b682-c054c0016879
+
 
 ## Built With
 This section lists the major frameworks/libraries used in the project. 
@@ -28,14 +31,12 @@ This section lists the major frameworks/libraries used in the project.
 
 ## Roadmap
 
-- [x] Website build
+- [x] Website built
 - [x] Lightweight Code Editor working
 - [x] Test suites implemented for questions  
 - [x] Find way to collect user's score
-- [ ] Test cases
 - [x] Store user's input as .py file 
 - [x] Session Management for user score incrementing 
 - [x] Create database linking 
-    - [x] Users
-    - [x] Secure passwords
-    - [x] User's scores
+    - [x] Users name, email, password, scores
+- [x] Store user's scores on leaderboard
