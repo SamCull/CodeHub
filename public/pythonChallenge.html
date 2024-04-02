@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Coding Challenges</title>
+  <title>Python Challenges</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -24,6 +24,7 @@
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  
 
   <!-- Template Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
@@ -35,7 +36,6 @@
   <!-- ======= Header ======= -->
   <section id="topbar" class="topbar d-flex align-items-center">
     <div class="container d-flex justify-content-center justify-content-md-between">
-
       <div class="social-links d-none d-md-flex align-items-center">
         <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
         <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
@@ -47,16 +47,18 @@
   <header id="header" class="header d-flex align-items-center">
 
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
+      <a href="homepage.html" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="assets/img/logo.png" alt=""> -->
         <h1>CodeHub<span>.</span></h1>
       </a>
+
+
       <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
       <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
 
     </div>
-  </header>
+  </header><!-- End Header -->
   <!-- End Header -->
 
   <main id="main">
@@ -67,8 +69,8 @@
         <div class="container position-relative">
           <div class="row d-flex justify-content-center">
             <div class="col-lg-6 text-center">
-              <h2>Code Challenges</h2>
-              <p>Select a language, choose a challenge, review your score in the leaderboards</p>
+              <h2>Python Challenges</h2>
+              <p>Select a challenge you wish to take at random, your correct answer will be saved and updated in your leaderboard. </p>
             </div>
           </div>
         </div>
@@ -77,67 +79,45 @@
         <div class="container">
           <ol>
             <li><a href="index.html">Home</a></li>
-            <li>Code Challenges</li>
+            <li>Sample Inner Page</li>
           </ol>
         </div>
       </nav>
     </div><!-- End Breadcrumbs -->
 
-<!-- ======= Portfolio Section ======= -->
-<section id="portfolio" class="portfolio sections-bg">
-  <div class="container" data-aos="fade-up">
-    <div class="section-header">
-      <h2>Select a language</h2>
-      <p>Select a language you wish to take on!</p><br>
-    </div>
-    <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
-      <div class="row gy-4 portfolio-container">
-        <!-- Portfolio items go here -->
-        <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-          <!-- Portfolio Item 1 -->
-          <div class="portfolio-wrap">
-            <a href="javaChallenge.html" >
-              <img src="assets/img/portfolio/java.png" class="img-fluid" alt="">
-            </a>
-            <div class="portfolio-info">
-              <h4><a href="javaChallenge.html" title="More Details">Java</a></h4>
-            </div>
+    <section class="sample-page">
+      <div class="container" data-aos="fade-up">
+
+      </div>
+    </section>
+
+      <!-- Challenges Section -->
+  <section class="challenges-section">
+    <div class="container">
+      <div class="row">
+        <!-- <div class="col-md-4 offset-md-8"> -->
+          <div class="col-md-12">
+          <h3> Select a challenge to begin </h3>
+          <div class="challenges-list">
+            <h3>Challenges:</h3>
+            <ul>
+              <!-- 
+                Fix: replace link below with there, was using http://localhost:8000/challenges/java1.html which wasnt found
+                disabled firewall - used different port to bring to IDE page
+            -->
+              <li><a href="challenges/python1.html" target="_blank">Challenge 1</a></li>
+              <li><a href="challenges/python2.html">Challenge 2</a></li>
+              <li><a href="challenges/python3.html">Challenge 3</a></li>
+              <li><a href="challenges/python4.html">Challenge 4</a></li>
+              <li><a href="challenges/python5.html">Challenge 5</a></li>
+
+              <!-- Add more challenges as needed -->
+            </ul>
           </div>
         </div>
-        <!-- Repeat the structure for additional portfolio items -->
-
-                <!-- Portfolio items go here -->
-                <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-                  <!-- Portfolio Item 1 -->
-                  <div class="portfolio-wrap">
-                    <a href="pythonChallenge.html" >
-                      <img src="assets/img/portfolio/python.png" class="img-fluid" alt="">
-                    </a>
-                    <div class="portfolio-info">
-                      <h4><a href="pythonChallenge.html" title="More Details">Python</a></h4>
-                    </div>
-                  </div>
-                </div>
-                <!-- Repeat the structure for additional portfolio items -->
-
-                        <!-- Portfolio items go here -->
-        <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-          <!-- Portfolio Item 1 -->
-          <div class="portfolio-wrap">
-            <a href="assets/img/portfolio/app-1.jpg" data-gallery="portfolio-gallery-app" class="glightbox">
-              <img src="assets/img/portfolio/c++.png" class="img-fluid" alt="">
-            </a>
-            <div class="portfolio-info">
-              <h4><a href="portfolio-details.html" title="More Details">C++</a></h4>
-            </div>
-          </div>
-        </div>
-        <!-- Repeat the structure for additional portfolio items -->
-      </div><!-- End Portfolio Container -->
+      </div>
     </div>
-  </div>
-</section><!-- End Portfolio Section -->
-
+  </section>
 
   </main><!-- End #main -->
 
@@ -148,11 +128,12 @@
       <div class="row gy-4">
         <div class="col-lg-5 col-md-12 footer-info">
           <a href="index.html" class="logo d-flex align-items-center">
-            <span>CodeHub</span>
+            <span>Impact</span>
           </a>
-          <p>CodeHub is a dynamic platform where coders and developers come together to tackle challenges, share knowledge, and grow their skills. 
-            Whether you're a beginner or a seasoned professional, our community and resources are here to support your coding journey</p>
+          <p>CodeHub is your gateway to advancing your coding expertise. With challenges crafted to refine your Python skills, 
+            you're on the path to mastering one of the most powerful programming languages in the tech world. Participate, learn, and lead in the CodeHub community</p>
           <div class="social-links d-flex mt-4">
+            <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
             <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
             <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
             <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
@@ -182,23 +163,22 @@
         </div> -->
 
         <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
-          <h4>Contact Us</h4>
-          <p>
-            <strong>Email:</strong> samcull2000@gmail.com<br>
-            <strong>LinkedIn</strong> https://www.linkedin.com/in/sam-cullen-489a46221/
-          </p>
+            <h4>Contact Us</h4>
+            <p>
+              <strong>Email:</strong> samcull2000@gmail.com<br>
+              <strong>LinkedIn</strong> https://www.linkedin.com/in/sam-cullen-489a46221/
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="container mt-4">
-      <div class="copyright">
-        &copy; Copyright <strong><span>CodeHub</span></strong>. All Rights Reserved
+  
+      <div class="container mt-4">
+        <div class="copyright">
+          &copy; Copyright <strong><span>CodeHub</span></strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+        </div>
       </div>
-      <div class="credits">
-      </div>
-    </div>
-
   </footer>
   <!-- End Footer -->
 
@@ -217,9 +197,6 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
-  <script src="signup.js"></script>
-  <script src="login.js"></script>
-
 
 </body>
 
