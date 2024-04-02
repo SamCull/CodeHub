@@ -6,7 +6,6 @@
 <title>Leaderboard | CodeHub</title>
 <link rel="stylesheet" href="styles.css"> 
 <style>
-
     body {
         font-family: Arial, sans-serif;
         background-color: #f4f4f4;
@@ -59,23 +58,47 @@
                 <th>Score</th>
             </tr>
         </thead>
-        <tbody>
-            <!-- Users data here -->
-            <tr>
-                <td>randomperson</td>
-                <td>randomperson@gmail.com</td>
-                <td>3</td>
-            </tr>
-            <tr>
-                <td>joebloggs</td>
-                <td>joebloggs@gmail.com</td>
-                <td>13</td>
-            </tr>
-           
+        <tbody id="leaderboard-body">
+            <!-- Leaderboard entries will be dynamically inserted here -->
         </tbody>
     </table>
 </div>
 
+<script>
+  window.onload = function() {
+      const leaderboardBody = document.getElementById('leaderboard-body');
+      // Retrieve and parse the leaderboard data array from local storage
+      let leaderboardData = JSON.parse(localStorage.getItem('leaderboardData')) || [];
+      
+      // Check if there is any data to display
+      if (leaderboardData.length > 0) {
+          leaderboardData.forEach((user) => {
+              const row = document.createElement('tr');
+              const nameCell = document.createElement('td');
+              const emailCell = document.createElement('td');
+              const scoreCell = document.createElement('td');
+
+              nameCell.textContent = user.username;
+              emailCell.textContent = user.email;
+              scoreCell.textContent = user.score;
+
+              row.appendChild(nameCell);
+              row.appendChild(emailCell);
+              row.appendChild(scoreCell);
+
+              leaderboardBody.appendChild(row);
+          });
+      } else {
+          // Display a placeholder row if no data
+          const placeholderRow = document.createElement('tr');
+          const placeholderCell = document.createElement('td');
+          placeholderCell.colSpan = 3;
+          placeholderCell.textContent = 'No data available';
+          placeholderRow.appendChild(placeholderCell);
+          leaderboardBody.appendChild(placeholderRow);
+      }
+  };
+</script>
 
 
 </body>
