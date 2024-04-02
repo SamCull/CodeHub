@@ -5,6 +5,8 @@ const fs = require("fs")
 const path = require("path")
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/CodeHub');
+// const WebSocket = require('ws');
+// const wss = new WebSocket.Server({ noServer: true });
 
 var db=mongoose.connection;
 db.on('error', console.log.bind(console, "connection error"));
@@ -19,6 +21,7 @@ compiler.init(options);
 
 var app = express();
 const session = require('express-session');
+
 
 app.use(session({
   secret: 'your_secret_key', // Replace 'your_secret_key' with a real secret key
@@ -39,8 +42,6 @@ app.use(express.static('static'));
 // Additionally serve 'java1.html' and other files from 'challenges' directory
 app.use('/challenges', express.static('challenges'));
 
-// Serve static files from the 'challenges' directory
-app.use('/challenges', express.static('challenges'));
 
 var userSchema = new mongoose.Schema({
     name: String,
@@ -48,7 +49,7 @@ var userSchema = new mongoose.Schema({
     password: String,
     score: Number
 });
-var User = mongoose.model('User', userSchema);
+var User = mongoose.model('User', userSchema, 'details');
 
 // API routes from Api.js and app.js
 app.post('/sign_up', function(req,res){
@@ -156,7 +157,7 @@ app.post('/increment-score', function(req, res) {
             } else if (result.modifiedCount === 0) {
                 res.status(404).json({ message: 'User not found' });
             } else {
-                res.json({ message: 'Score incremented successfully!' });
+                res.json({ message: 'All tests passed. Score incremented successfully!' });
             }
         }
     );
@@ -280,6 +281,18 @@ app.get("/", function (req, res){
 app.get('/homepage.html', function(req, res) {
     res.sendFile(__dirname + '/public/homepage.html');
 });
+
+app.get('/leaderboard', async (req, res) => {
+    try {
+        // Fetch top scores from the database and sort them in descending order
+        const leaderboardData = await User.find().sort({ score: -1 }).limit(10);
+        res.json(leaderboardData); // Send the data as JSON
+    } catch (error) {
+        console.error('Failed to fetch leaderboard data:', error);
+        res.status(500).send('Error fetching leaderboard data');
+    }
+});
+
 
 // Additional routes go here
 
