@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leaderboard | CodeHub</title>
-<link rel="stylesheet" href="styles.css"> 
+<!-- <link rel="stylesheet" href="styles.css">  -->
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -65,39 +65,29 @@
 </div>
 
 <script>
-  window.onload = function() {
-      const leaderboardBody = document.getElementById('leaderboard-body');
-      // Retrieve and parse the leaderboard data array from local storage
-      let leaderboardData = JSON.parse(localStorage.getItem('leaderboardData')) || [];
-      
-      // Check if there is any data to display
-      if (leaderboardData.length > 0) {
-          leaderboardData.forEach((user) => {
-              const row = document.createElement('tr');
-              const nameCell = document.createElement('td');
-              const emailCell = document.createElement('td');
-              const scoreCell = document.createElement('td');
-
-              nameCell.textContent = user.username;
-              emailCell.textContent = user.email;
-              scoreCell.textContent = user.score;
-
-              row.appendChild(nameCell);
-              row.appendChild(emailCell);
-              row.appendChild(scoreCell);
-
-              leaderboardBody.appendChild(row);
-          });
-      } else {
-          // Display a placeholder row if no data
-          const placeholderRow = document.createElement('tr');
-          const placeholderCell = document.createElement('td');
-          placeholderCell.colSpan = 3;
-          placeholderCell.textContent = 'No data available';
-          placeholderRow.appendChild(placeholderCell);
-          leaderboardBody.appendChild(placeholderRow);
-      }
-  };
+window.onload = function() {
+    fetch('leaderboard') // Adjusted relative path to match the public directory
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            leaderboardBody.innerHTML = ''; // Clear existing rows
+            
+            // Populate leaderboard with fetched data
+            data.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${user.name}</td><td>${user.email}</td><td>${user.score}</td>`;
+                leaderboardBody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+};
 </script>
 
 
