@@ -178,6 +178,130 @@ app.post('/create-fibonacci-file', (req, res) => {
     });
 }); //END FIBONACCI
 
+app.post('/create-smallestMultiple-file', (req, res) => {
+    const functionCode = req.body.code || '';
+    
+    // Save the submitted code into the users directory as 'smallestMultiple.py'
+    fs.writeFileSync(path.join(usersDir, 'smallestMultiple.py'), functionCode);
+
+    // Run the tests and capture output
+    exec('python -m unittest tests.test_smallestMultiple', { cwd: __dirname }, (error, stdout, stderr) => {
+        let message;
+        if (error) {
+            message = "Error executing tests";
+            console.error(`exec error: ${error}`);
+        } else {
+            // Parse the output for test results
+            const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
+            const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
+            let passed, failed, total;
+
+            if (passedMatch) {
+                total = parseInt(passedMatch[1], 10);
+                passed = total;
+                failed = 0;
+                // If all tests passed, optionally increment the user's score
+                // Increment score logic here (similar to previous challenges)
+            } else if (failedMatch) {
+                total = parseInt(failedMatch[1], 10);
+                failed = parseInt(failedMatch[2], 10);
+                passed = total - failed;
+            }
+
+            // Format the response message
+            if (passed === total) {
+                message = `All tests passed, well done!`;
+            } else {
+                message = `${passed}/${total}: ${passed} test${passed !== 1 ? 's' : ''} passed, ${failed} failed`;
+            }
+        }
+        
+        res.json({ message });
+    });
+}); // END SMALLEST MULTIPLE
+
+app.post('/create-prime-file', (req, res) => {
+    const functionCode = req.body.code || '';
+    
+    // Save the submitted code into the users directory as 'prime.py'
+    fs.writeFileSync(path.join(usersDir, 'prime.py'), functionCode);
+
+    // Run the tests and capture output
+    exec('python -m unittest tests.test_prime', { cwd: __dirname }, (error, stdout, stderr) => {
+        let message;
+        if (error) {
+            message = "Error executing tests";
+            console.error(`exec error: ${error}`);
+        } else {
+            // Attempt to parse the output
+            const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
+            const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
+            let passed, failed, total;
+
+            if (passedMatch) {
+                total = parseInt(passedMatch[1], 10);
+                passed = total;
+                failed = 0;
+            } else if (failedMatch) {
+                total = parseInt(failedMatch[1], 10);
+                failed = parseInt(failedMatch[2], 10);
+                passed = total - failed;
+            }
+
+            // Format the response message
+            if (passed === total) {
+                message = `All tests passed, well done!`;
+            } else {
+                message = `${passed}/${total}: ${passed} test${passed !== 1 ? 's' : ''} passed, ${failed} failed`;
+            }
+        }
+        
+        res.json({ message });
+    });
+}); // END 10,0001ST PRIME
+
+app.post('/create-palindrome-file', (req, res) => {
+    const functionCode = req.body.code || '';
+    
+    // Save the submitted code into the users directory
+    fs.writeFileSync(path.join(usersDir, 'palindrome.py'), functionCode);
+
+    // Run the tests and capture output
+    exec('python -m unittest tests.test_palindrome', { cwd: __dirname }, (error, stdout, stderr) => {
+        let message;
+        if (error) {
+            message = "Error executing tests";
+            console.error(`exec error: ${error}`);
+        } else {
+            // Attempt to parse the output
+            const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
+            const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
+            let passed, failed, total;
+
+            if (passedMatch) {
+                total = parseInt(passedMatch[1], 10);
+                passed = total;
+                failed = 0;
+            } else if (failedMatch) {
+                total = parseInt(failedMatch[1], 10);
+                failed = parseInt(failedMatch[2], 10);
+                passed = total - failed;
+            }
+
+            // Format the response message
+            if (passed === total) {
+                message = `5/5: All tests passed, well done!`;
+            } else {
+                message = `${passed}/${total}: ${passed} test${passed !== 1 ? 's' : ''} passed, ${failed} failed`;
+            }
+        }
+        
+        res.json({ message });
+    });
+}); //END PALINDRONE
+
+
+
 // ************************************************************************ //
 // POST /increment-score from Api.js
 app.post('/increment-score', function(req, res) {
