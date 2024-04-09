@@ -97,8 +97,8 @@ const usersDir = path.join(__dirname, 'users');
 if (!fs.existsSync(usersDir)){
     fs.mkdirSync(usersDir);
 }
-
-app.post('/create-function-file', (req, res) => {
+// ***********************************************************//
+app.post('/create-multiples-file', (req, res) => {
     const functionCode = req.body.code || '';
     
     // Save the submitted code into the users directory
@@ -136,9 +136,49 @@ app.post('/create-function-file', (req, res) => {
         
         res.json({ message });
     });
-});
+}); //END MULTIPLES
 
+app.post('/create-fibonacci-file', (req, res) => {
+    const functionCode = req.body.code || '';
+    
+    // Save the submitted code into the users directory
+    fs.writeFileSync(path.join(usersDir, 'fibonacci.py'), functionCode);
 
+    // Run the tests and capture output
+    exec('python -m unittest tests.test_fibonacci', { cwd: __dirname }, (error, stdout, stderr) => {
+        let message;
+        if (error) {
+            message = "Error executing tests";
+            console.error(`exec error: ${error}`);
+        } else {
+            // Attempt to parse the output
+            const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
+            const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
+            let passed, failed, total;
+
+            if (passedMatch) {
+                total = parseInt(passedMatch[1], 10);
+                passed = total;
+                failed = 0;
+            } else if (failedMatch) {
+                total = parseInt(failedMatch[1], 10);
+                failed = parseInt(failedMatch[2], 10);
+                passed = total - failed;
+            }
+
+            // Format the response message
+            if (passed === total) {
+                message = `All tests passed, well done!`;
+            } else {
+                message = `${passed}/${total}: ${passed} test${passed !== 1 ? 's' : ''} passed, ${failed} failed`;
+            }
+        }
+        
+        res.json({ message });
+    });
+}); //END FIBONACCI
+
+// ************************************************************************ //
 // POST /increment-score from Api.js
 app.post('/increment-score', function(req, res) {
     if (!req.session.user) {
