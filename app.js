@@ -47,7 +47,8 @@ var userSchema = new mongoose.Schema({
     name: String,
     email: String,
     password: String,
-    score: Number
+    score: Number,
+    lastUpdated: String
 });
 var User = mongoose.model('User', userSchema, 'details');
 
@@ -310,10 +311,15 @@ app.post('/increment-score', function(req, res) {
     }
 
     const userEmail = req.session.user.email;
+    const now = new Date();
+    const dateString = now.toISOString().substring(0, 10); // Format as 'YYYY-MM-DD'
 
     db.collection('details').updateOne(
         { email: userEmail },
-        { $inc: { score: 1 } },
+        { 
+            $inc: { score: 1 },
+            $set: { lastUpdated: dateString } // Set the last updated date
+        },
         function(err, result) {
             if (err) {
                 console.error(err);
@@ -321,7 +327,8 @@ app.post('/increment-score', function(req, res) {
             } else if (result.modifiedCount === 0) {
                 res.status(404).json({ message: 'User not found' });
             } else {
-                res.json({ message: 'All tests passed. Score incremented successfully!' });
+                // Send the date back in the response
+                res.json({ message: 'All tests passed. Score incremented successfully!', date: dateString });
             }
         }
     );
@@ -449,7 +456,7 @@ app.get('/homepage.html', function(req, res) {
 app.get('/leaderboard', async (req, res) => {
     try {
         // Fetch top scores from the database and sort them in descending order
-        const leaderboardData = await User.find().sort({ score: -1 }).limit(10);
+        const leaderboardData = await User.find().sort({ score: -1 });
         res.json(leaderboardData); // Send the data as JSON
     } catch (error) {
         console.error('Failed to fetch leaderboard data:', error);
