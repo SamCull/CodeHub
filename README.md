@@ -40,3 +40,7 @@ This section lists the major frameworks/libraries used in the project.
 - [x] Create database linking 
     - [x] Users name, email, password, scores
 - [x] Store user's scores on leaderboard
+    - [x] Name
+    - [x] Email
+    - [x] Score
+    - [x] Date
