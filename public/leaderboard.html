@@ -135,7 +135,7 @@
             <ul>
               <!-- Other navigation items -->
               <li><a href="/homepage.html">Home</a></li>
-              <li><a href="/javaChallenge.html">Challenges</a></li>
+              <li><a href="/challenges.html">Challenges</a></li>
               <li><a href="/leaderboard.html">Leaderboard</a></li>
               <!-- Add more nav items as needed -->
             </ul>
@@ -157,6 +157,7 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Score</th>
+                <th>Last Updated</th>
             </tr>
         </thead>
         <tbody id="leaderboard-body">
@@ -181,7 +182,7 @@ window.onload = function() {
             // Populate leaderboard with fetched data
             data.forEach(user => {
                 const row = document.createElement('tr');
-                row.innerHTML = `<td>${user.name}</td><td>${user.email}</td><td>${user.score}</td>`;
+                row.innerHTML = `<td>${user.name}</td><td>${user.email}</td><td>${user.score}</td><td>${user.lastUpdated}</td>`;
                 leaderboardBody.appendChild(row);
             });
         })
@@ -189,6 +190,35 @@ window.onload = function() {
             console.error('Fetch error:', error);
         });
 };
+
+
+// Fetch the updated leaderboard after the score is incremented
+function updateLeaderboard() {
+    fetch('/leaderboard')
+        .then(response => response.json())
+        .then(data => {
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            leaderboardBody.innerHTML = ''; // Clear existing rows
+
+            // Populate leaderboard with fetched data
+            data.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${user.name}</td>
+                                 <td>${user.email}</td>
+                                 <td>${user.score}</td>
+                                 <td>${user.lastUpdated}</td>`; // Include the lastUpdated field
+                leaderboardBody.appendChild(row);
+            });
+
+            // Update the "Last Updated" timestamp
+            const lastUpdatedTimeSpan = document.getElementById('last-updated-time');
+            if (data.length) {
+                lastUpdatedTimeSpan.textContent = `Last Updated: ${data[0].lastUpdated}`;
+            }
+        })
+        .catch(error => console.error('Error updating leaderboard:', error));
+}
+
 </script>
 
 
