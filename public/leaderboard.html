@@ -133,10 +133,11 @@
     
           <nav class="navbar">
             <ul>
+              <a href="#" onclick="history.back();" style="margin-right: 20px; color: white; font-weight: bold;">&#8592; Back</a>
               <!-- Other navigation items -->
               <li><a href="/homepage.html">Home</a></li>
               <li><a href="/challenges.html">Challenges</a></li>
-              <li><a href="/leaderboard.html">Leaderboard</a></li>
+              <!-- <li><a href="/leaderboard.html">Leaderboard</a></li> -->
               <!-- Add more nav items as needed -->
             </ul>
           </nav>
@@ -181,6 +182,7 @@ window.onload = function() {
             
             // Populate leaderboard with fetched data
             data.forEach(user => {
+              const lastUpdated = user.lastUpdated || "Date not updated yet";
                 const row = document.createElement('tr');
                 row.innerHTML = `<td>${user.name}</td><td>${user.email}</td><td>${user.score}</td><td>${user.lastUpdated}</td>`;
                 leaderboardBody.appendChild(row);
