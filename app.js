@@ -58,11 +58,15 @@ app.post('/sign_up', function(req,res){
 	var email = req.body.email;
 	var pass = req.body.password;
 
+        // Capitalize the first letter of the name
+        name = name.charAt(0).toUpperCase() + name.slice(1);
+
 	var data = {
 		"name": name,
 		"email":email,
 		"password":pass,
 		 "score": 0
+
 	}
 db.collection('details').insertOne(data,function(err, collection){
 		if (err) throw err;
@@ -454,10 +458,11 @@ app.get('/homepage.html', function(req, res) {
 });
 
 app.get('/leaderboard', async (req, res) => {
+    const sortField = req.query.sort || 'score'; // Default sort field
+    const sortOrder = req.query.order === 'asc' ? 1 : -1; // Default order
     try {
         // Fetch top scores from the database and sort them in descending order
-        const leaderboardData = await User.find().sort({ score: -1 });
-        res.json(leaderboardData); // Send the data as JSON
+        const leaderboardData = await User.find().sort({ [sortField]: sortOrder });        res.json(leaderboardData); // Send the data as JSON
     } catch (error) {
         console.error('Failed to fetch leaderboard data:', error);
         res.status(500).send('Error fetching leaderboard data');
