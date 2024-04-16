@@ -3,121 +3,152 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <title>Leaderboard | CodeHub</title>
 <!-- <link rel="stylesheet" href="styles.css">  -->
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-    }
-    .header {
-        background-color: #333;
-        color: white;
-        padding: 10px 0;
-        text-align: center;
-    }
-    .main {
-        width: 80%;
-        margin: 20px auto;
-        background-color: white;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    th, td {
-        text-align: left;
-        padding: 8px;
-        border-bottom: 1px solid #ddd;
-    }
-    th {
-        background-color: #4CAF50;
-        color: white;
-    }
-    tr:hover {
-        background-color: #f5f5f5;
-    }
-    /* Header and Footer */
-.header, footer {
-  background-color: #004d40;
-  color: #ffffff;
-  padding: 1rem 0;
+  body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+  }
+  .header {
+      background-color: #333;
+      color: white;
+      padding: 10px 0;
+      text-align: center;
+  }
+  .main {
+      width: 80%;
+      margin: 20px auto;
+      background-color: white;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+  }
+  table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 8px;
+      overflow: hidden;
+  }
+  th, td {
+      text-align: left;
+      padding: 12px 15px;
+      border-bottom: 1px solid #ddd;
+  }
+  th {
+      background-color: #4CAF50;
+      color: white;
+  }
+  tr:nth-child(even) {
+      background-color: #f2f2f2;
+  }
+  tr:hover {
+      background-color: #ddd;
+  }
+
+  .first-place { font-weight: bold; color: gold; }
+  .second-place { font-weight: bold; color: silver; }
+  .third-place { font-weight: bold; color: #cd7f32; } /* Bronze */
+
+  .filter-controls {
+    text-align: center;
+    margin: 10px 0;
 }
 
-/* Navigation Bar */
-.navbar {
-  background-color: #004d40;
-  color: #ffffff;
-  padding: 10px 0;
-  text-align: center;
+.filter-controls button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
-.navbar ul {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  list-style: none;
-  align-items: center;
-  justify-content: center;
+.filter-controls button:hover {
+    background-color: #45a049;
 }
 
-.navbar ul li {
-  position: relative;
-  white-space: nowrap;
-  padding: 10px 0 10px 28px;
-}
 
-.navbar a {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 3px;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: 0.3s;
-  position: relative;
-}
 
-.navbar a i {
-  font-size: 12px;
-  line-height: 0;
-  margin-left: 5px;
-}
 
-.navbar>ul>li>a:before {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  bottom: -6px;
-  left: 0;
-  background-color: #f9a825; /* Change this color as needed */
-  visibility: hidden;
-  width: 0px;
-  transition: all 0.3s ease-in-out 0s;
-}
+  /* Navigation Bar */
+  .navbar {
+      background-color: #004d40;
+      color: #ffffff;
+      padding: 10px 0;
+      text-align: center;
+  }
 
-.navbar a:hover:before,
-.navbar li:hover>a:before,
-.navbar .active:before {
-  visibility: visible;
-  width: 100%;
-}
+  .navbar ul {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      list-style: none;
+      align-items: center;
+      justify-content: center;
+  }
 
-.navbar a:hover,
-.navbar .active,
-.navbar .active:focus,
-.navbar li:hover>a {
-  color: #ffffff;
-}
+  .navbar ul li {
+      position: relative;
+      white-space: nowrap;
+      padding: 10px 0 10px 28px;
+  }
+
+  .navbar a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3px;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: 0.3s;
+      position: relative;
+  }
+
+  .navbar a i {
+      font-size: 12px;
+      line-height: 0;
+      margin-left: 5px;
+  }
+
+  .navbar>ul>li>a:before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      bottom: -6px;
+      left: 0;
+      background-color: #f9a825;
+      visibility: hidden;
+      width: 0px;
+      transition: all 0.3s ease-in-out 0s;
+  }
+
+  .navbar a:hover:before,
+  .navbar li:hover>a:before,
+  .navbar .active:before {
+      visibility: visible;
+      width: 100%;
+  }
+
+  .navbar a:hover,
+  .navbar .active,
+  .navbar .active:focus,
+  .navbar li:hover>a {
+      color: #ffffff;
+  }
 </style>
 
 </head>
@@ -152,6 +183,16 @@
 </div>
 
 <div class="main">
+  <div class="filter-controls">
+    <button onclick="sortLeaderboard('score', 'asc')">Score Ascending</button>
+    <button onclick="sortLeaderboard('score', 'desc')">Score Descending</button>
+    <button onclick="sortLeaderboard('lastUpdated', 'desc')">Newest</button>
+    <button onclick="sortLeaderboard('lastUpdated', 'asc')">Oldest</button>
+    <button onclick="refreshLeaderboard()">
+      <i class="fas fa-sync-alt"></i>
+  </button>
+</div>
+
     <table>
         <thead>
             <tr>
@@ -181,10 +222,20 @@ window.onload = function() {
             leaderboardBody.innerHTML = ''; // Clear existing rows
             
             // Populate leaderboard with fetched data
-            data.forEach(user => {
-              const lastUpdated = user.lastUpdated || "Date not updated yet";
+            data.forEach((user, index) => {
+                const lastUpdated = user.lastUpdated || "Date not updated yet";
                 const row = document.createElement('tr');
-                row.innerHTML = `<td>${user.name}</td><td>${user.email}</td><td>${user.score}</td><td>${user.lastUpdated}</td>`;
+                let nameHtml = user.name;
+                
+                if (index === 0) {
+                    nameHtml = `<span class="first-place">🥇 ${user.name}</span>`;
+                } else if (index === 1) {
+                    nameHtml = `<span class="second-place">🥈 ${user.name}</span>`;
+                } else if (index === 2) {
+                    nameHtml = `<span class="third-place">🥉 ${user.name}</span>`;
+                }
+                
+                row.innerHTML = `<td>${nameHtml}</td><td>${user.email}</td><td>${user.score}</td><td>${user.lastUpdated}</td>`;
                 leaderboardBody.appendChild(row);
             });
         })
@@ -220,6 +271,60 @@ function updateLeaderboard() {
         })
         .catch(error => console.error('Error updating leaderboard:', error));
 }
+
+function sortLeaderboard(field, order) {
+    fetch(`leaderboard?sort=${field}&order=${order}`)
+        .then(response => response.json())
+        .then(data => {
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            leaderboardBody.innerHTML = ''; // Clear existing rows
+            data.forEach((user, index) => {
+                const row = document.createElement('tr');
+                let nameHtml = user.name;
+                row.innerHTML = `<td>${nameHtml}</td><td>${user.email}</td><td>${user.score}</td><td>${user.lastUpdated}</td>`;
+                leaderboardBody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+}
+function refreshLeaderboard() {
+    fetch('leaderboard')
+        .then(response => response.json())
+        .then(data => {
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            leaderboardBody.innerHTML = ''; // Clear the table first
+            
+            data.forEach((user, index) => {
+                const row = document.createElement('tr');
+                let nameHtml = user.name;
+                let additionalClass = '';
+                
+                // Check the index to assign medals and special styling
+                if (index === 0) {
+                    nameHtml = `<span class="first-place">🥇 ${user.name}</span>`;
+                    additionalClass = 'first-place';
+                } else if (index === 1) {
+                    nameHtml = `<span class="second-place">🥈 ${user.name}</span>`;
+                    additionalClass = 'second-place';
+                } else if (index === 2) {
+                    nameHtml = `<span class="third-place">🥉 ${user.name}</span>`;
+                    additionalClass = 'third-place';
+                }
+
+                // Construct the row with appropriate styling
+                row.innerHTML = `<td class="${additionalClass}">${nameHtml}</td><td>${user.email}</td><td>${user.score}</td><td>${user.lastUpdated}</td>`;
+                leaderboardBody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+}
+
+
+
 
 </script>
 
