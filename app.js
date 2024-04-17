@@ -33,6 +33,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
+
 // Serve static files
 app.use("/codemirror-5.65.16", express.static("C:/del/Impact/codemirror-5.65.16"));
 app.use(express.static('public'));
@@ -52,7 +53,22 @@ var userSchema = new mongoose.Schema({
 });
 var User = mongoose.model('User', userSchema, 'details');
 
-// API routes from Api.js and app.js
+/**
+ * @file app.js
+ * @brief Handles user registration.
+ *
+ * This route handles user sign-up requests. It receives the user's name, email, and password
+ * from the request body, formats the name to capitalize the first letter, and inserts the new user
+ * record into the 'details' database collection. Upon successful insertion, the client is redirected
+ * to the login page.
+ *
+ * @param req The request object, containing the user's name, email, and password.
+ * @param res The response object used to reply to the client.
+ * 
+ * @return None. Directly interacts with the database and redirects upon completion:
+ *         - Redirects to 'login.html' after successful user registration.
+ *         - Throws an error and logs it if there is a problem with the database insertion.
+ */
 app.post('/sign_up', function(req,res){
 	var name = req.body.name;
 	var email = req.body.email;
@@ -77,6 +93,23 @@ db.collection('details').insertOne(data,function(err, collection){
 	return res.redirect('login.html');
 })
 
+
+/**
+ * @file app.js
+ * @brief Handles user login.
+ *
+ * This function processes user login requests by checking the credentials against the database.
+ * If the credentials are valid, it stores user information in the session and returns a success message.
+ * If the credentials are invalid, it redirects to an error page.
+ *
+ * @param req The request object, containing the user's email and password.
+ * @param res The response object used to reply to the client.
+ * 
+ * @return None. Responses are sent via the res object:
+ *         - Sends a JSON response with a success message and the username if login is successful.
+ *         - Redirects to '/invalidCredentials.html' if credentials are invalid.
+ *         - Returns a 500 status with an 'Internal Server Error' message on server error.
+ */
 app.post('/login', function(req, res) {
     var email = req.body.email;
     var password = req.body.password;
@@ -307,8 +340,25 @@ app.post('/create-palindrome-file', (req, res) => {
 
 
 
-// ************************************************************************ //
-// POST /increment-score from Api.js
+/**
+ * @file app.js
+ * @brief Handles score incrementation for authenticated users.
+ *
+ * This endpoint increments the score of an authenticated user by one. It checks if the user is 
+ * currently logged in (i.e., present in the session). If not logged in, it responds with an 
+ * unauthorized status. Otherwise, it updates the user's score in the database and sets the 
+ * last updated date to today's date. It handles database errors and the condition where the 
+ * specified user does not exist.
+ *
+ * @param req The request object, expecting a user session to be present.
+ * @param res The response object used to send back the status and messages.
+ * 
+ * @return None. Responses are provided through the res object:
+ *         - Returns a JSON response with a success message and the last updated date on successful score update.
+ *         - Returns a 401 status with 'Unauthorized' if the user is not logged in.
+ *         - Returns a 500 status with an error message if there's a server-side error during the database operation.
+ *         - Returns a 404 status with 'User not found' if no record is updated in the database.
+ */
 app.post('/increment-score', function(req, res) {
     if (!req.session.user) {
         return res.status(401).json({ message: 'Unauthorized' });
@@ -339,7 +389,23 @@ app.post('/increment-score', function(req, res) {
 });
 
 
-// POST /compile from Api.js
+/**
+ * @file app.js
+ * @brief Handles the compilation of code snippets.
+ *
+ * This route provides an API endpoint for compiling code snippets in C++, Java, and Python. 
+ * It expects code, input (optional), and language from the request body. The route uses different 
+ * compiler configurations based on the specified language and whether input is provided. It returns 
+ * the compilation output or an error message if the compilation fails.
+ *
+ * @param req The request object, containing the code, optional input data, and language specification.
+ * @param res The response object used to send back the compilation result or error messages.
+ * 
+ * @return None. Compilation results or errors are sent back through the res object:
+ *         - On successful compilation, sends a JSON object containing the output.
+ *         - On failure, sends a JSON object with "error" as the output.
+ *         - Catches and logs any server-side exceptions that occur during the process.
+ */
 app.post("/compile", function (req, res) {
     // Extracting code, input, and language from the request body
     var code = req.body.code
@@ -444,7 +510,19 @@ app.post("/compile", function (req, res) {
 
 
 
-// GET / from Api.js
+/**
+ * @file app.js
+ * @brief Serves the main index page.
+ *
+ * This endpoint serves the main index HTML file to clients. When a GET request is made to the 
+ * root of the server, this function responds by sending the 'index.html' file located in the 
+ * 'public' directory of the server. This is typically the entry point into the web application.
+ *
+ * @param req The request object. Not used directly in the function but necessary for route handling.
+ * @param res The response object used to send the 'index.html' file to the client.
+ * 
+ * @return None. Sends the 'index.html' file from the 'public' directory to the client.
+ */
 app.get("/", function (req, res){
     res.sendFile(__dirname + '/public/index.html');
 });
@@ -452,11 +530,40 @@ app.get("/", function (req, res){
 
 
 
-// GET /homepage.html from app.js
+/**
+ * @file app.js
+ * @brief Serves the homepage HTML file.
+ *
+ * This endpoint serves the 'homepage.html' file located in the 'public' directory to clients.
+ * When a GET request is made to '/homepage.html', this function responds by sending the
+ * specific HTML file. This allows the client to access the homepage of the web application
+ * directly via a dedicated URL.
+ *
+ * @param req The request object. Not used directly in the function but necessary for route handling.
+ * @param res The response object used to send the 'homepage.html' file to the client.
+ * 
+ * @return None. Sends the 'homepage.html' file from the 'public' directory to the client.
+ */
 app.get('/homepage.html', function(req, res) {
     res.sendFile(__dirname + '/public/homepage.html');
 });
 
+
+/**
+ * @file app.js
+ * @brief Fetches and sends leaderboard data.
+ *
+ * This endpoint retrieves leaderboard data from the database, sorted by a specified field
+ * and order, which can be passed as query parameters. If no parameters are provided,
+ * it defaults to sorting by 'score' in descending order. The function handles database
+ * access asynchronously and sends the fetched data as a JSON response to the client.
+ * In case of database access errors, it logs the error and sends a server error response.
+ *
+ * @param req The request object, which may contain query parameters 'sort' and 'order' to customize the sorting of the leaderboard.
+ * @param res The response object used to send the sorted leaderboard data or an error message.
+ * 
+ * @return None. On success, sends a JSON array of leaderboard entries. On failure, sends a server error message.
+ */
 app.get('/leaderboard', async (req, res) => {
     const sortField = req.query.sort || 'score'; // Default sort field
     const sortOrder = req.query.order === 'asc' ? 1 : -1; // Default order
