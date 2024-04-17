@@ -259,19 +259,7 @@ var input = document.getElementById("input")
 var output = document.getElementById("output")
 var run = document.getElementById("run")
 var option = document.getElementById("inlineFormSelectPref")
-/*
-// Adding an event listener to the language selection dropdown
-option.addEventListener("change", function () {
-    // Changing the editor mode based on the selected language
-    if (option.value == "Java") {
-        editor.setOption("mode", "text/x-java")
-    } else if (option.value == "python") {
-        editor.setOption("mode", "text/x-python")
-    } else {
-        editor.setOption("mode", "text/x-c++src")
-    }
-})
-*/
+
 // Adding an event listener to the language selection dropdown
 option.addEventListener("change", function () {
     // Changing the editor mode based on the selected language
@@ -323,7 +311,16 @@ function incrementScore() {
 
 var code;
 
-// Adding an event listener to the "Run" button
+/**
+ * @brief Executes and compiles code from the editor.
+ * 
+ * This function captures the code from the CodeMirror editor, along with any additional input,
+ * and the selected programming language. It sends these data to the server for compilation.
+ * The server response is then used to populate the output area in the user interface.
+ *
+ * @param None
+ * @return None
+ */
 run.addEventListener("click", async function () {
     // Creating a code object with the editor content, input value, and selected language
     code = {
@@ -404,7 +401,15 @@ document.getElementById("saveAndTestCode").addEventListener("click", async funct
     }
 });
 
-
+/**
+ * @brief Increments the user's score on the server.
+ * 
+ * If the user is logged in, this function sends a request to the server to increment the user's
+ * score. This typically follows successful code submission or passing of tests.
+ *
+ * @param None
+ * @return None
+ */
 function incrementScore() {
     const userEmail = localStorage.getItem('userEmail'); // Ensure this is set during login
 
