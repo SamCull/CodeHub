@@ -325,7 +325,16 @@ function incrementScore() {
 
 var code;
 
-// Adding an event listener to the "Run" button
+/**
+ * @brief Runs and validates the smallest multiple finding code.
+ *
+ * This function manages the execution of code aimed at finding the smallest multiple. It sends user
+ * code to the server and displays the output. Depending on the correctness, additional interactions
+ * like score updating might be triggered.
+ *
+ * @param None
+ * @return None
+ */
 run.addEventListener("click", async function () {
     // Creating a code object with the editor content, input value, and selected language
     code = {
@@ -334,8 +343,6 @@ run.addEventListener("click", async function () {
         lang: option.value
     };
     console.log(code);
-
-
 
     // Sending a POST request to the server for code compilation
     try {
@@ -378,10 +385,17 @@ run.addEventListener("click", async function () {
 // Example login function that might run after successful authentication
 function loginUser(email) {
   localStorage.setItem('userEmail'); 
-    // Redirect to the page with the coding challenge or perform other login success actions
 }
 
-
+/**
+ * @brief Manages the saving and testing of the smallest multiple code.
+ *
+ * Engages the server to save and evaluate the user's solution. Feedback is provided based on the
+ * test results, influencing user scoring and experience.
+ *
+ * @param None
+ * @return None
+ */
 document.getElementById("saveAndTestCode").addEventListener("click", async function () {
     const codeContent = {
         code: editor.getValue()

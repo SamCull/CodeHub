@@ -262,19 +262,7 @@ var input = document.getElementById("input")
 var output = document.getElementById("output")
 var run = document.getElementById("run")
 var option = document.getElementById("inlineFormSelectPref")
-/*
-// Adding an event listener to the language selection dropdown
-option.addEventListener("change", function () {
-    // Changing the editor mode based on the selected language
-    if (option.value == "Java") {
-        editor.setOption("mode", "text/x-java")
-    } else if (option.value == "python") {
-        editor.setOption("mode", "text/x-python")
-    } else {
-        editor.setOption("mode", "text/x-c++src")
-    }
-})
-*/
+
 // Adding an event listener to the language selection dropdown
 option.addEventListener("change", function () {
     // Changing the editor mode based on the selected language
@@ -326,7 +314,16 @@ function incrementScore() {
 
 var code;
 
-// Adding an event listener to the "Run" button
+/**
+ * @brief Runs the palindrome checking code and handles the server response.
+ *
+ * This function captures the user's input code and sends it to a server endpoint for execution.
+ * It displays the result of the palindrome check in the output area of the page. If the response
+ * indicates a successful check, specific actions (like score increment) are triggered.
+ *
+ * @param None
+ * @return None
+ */
 run.addEventListener("click", async function () {
     // Creating a code object with the editor content, input value, and selected language
     code = {
@@ -335,8 +332,6 @@ run.addEventListener("click", async function () {
         lang: option.value
     };
     console.log(code);
-
-
 
     // Sending a POST request to the server for code compilation
     try {
@@ -379,10 +374,18 @@ run.addEventListener("click", async function () {
 // Example login function that might run after successful authentication
 function loginUser(email) {
   localStorage.setItem('userEmail'); 
-    // Redirect to the page with the coding challenge or perform other login success actions
 }
 
 
+/**
+ * @brief Saves and tests the palindrome checking code.
+ *
+ * Submits the user's code for saving and testing against predefined conditions. Depending on the
+ * test results, user feedback is provided and score might be incremented.
+ *
+ * @param None
+ * @return None
+ */
 document.getElementById("saveAndTestCode").addEventListener("click", async function () {
     const codeContent = {
         code: editor.getValue()

@@ -326,7 +326,16 @@ function incrementScore() {
 
 var code;
 
-// Adding an event listener to the "Run" button
+/**
+ * @brief Executes and checks the prime number finding code.
+ *
+ * Initiates the execution of the user's code to find prime numbers, handling input and output
+ * through server interactions. Responses from the server are used to update the UI and possibly
+ * modify user score based on correct answers.
+ *
+ * @param None
+ * @return None
+ */
 run.addEventListener("click", async function () {
     // Creating a code object with the editor content, input value, and selected language
     code = {
@@ -335,8 +344,6 @@ run.addEventListener("click", async function () {
         lang: option.value
     };
     console.log(code);
-
-
 
     // Sending a POST request to the server for code compilation
     try {
@@ -382,7 +389,15 @@ function loginUser(email) {
     // Redirect to the page with the coding challenge or perform other login success actions
 }
 
-
+/**
+ * @brief Saves and validates the prime number finding code.
+ *
+ * This function is responsible for sending the user's code to the server to be saved and tested.
+ * The result of these tests can influence user feedback and scoring.
+ *
+ * @param None
+ * @return None
+ */
 document.getElementById("saveAndTestCode").addEventListener("click", async function () {
     const codeContent = {
         code: editor.getValue()

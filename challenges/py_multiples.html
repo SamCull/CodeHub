@@ -321,7 +321,16 @@ function incrementScore() {
 
 var code;
 
-// Adding an event listener to the "Run" button
+/**
+ * @brief Runs and compiles the user's code.
+ * 
+ * This function captures the code from the CodeMirror editor, including any user inputs, and sends
+ * these data to a server-side endpoint for compilation. The function then displays the resulting output
+ * or errors in the UI.
+ *
+ * @param None Explicit parameters are not used as this function is triggered by an event listener.
+ * @return None This function does not return values but performs HTTP requests and UI updates.
+ */
 run.addEventListener("click", async function () {
     // Creating a code object with the editor content, input value, and selected language
     code = {
@@ -330,8 +339,6 @@ run.addEventListener("click", async function () {
         lang: option.value
     };
     console.log(code);
-
-
 
     // Sending a POST request to the server for code compilation
     try {
@@ -371,13 +378,22 @@ run.addEventListener("click", async function () {
     }
 });
 
-// Example login function that might run after successful authentication
+// Example login function runs after successful authentication
 function loginUser(email) {
   localStorage.setItem('userEmail'); 
-    // Redirect to the page with the coding challenge or perform other login success actions
 }
 
 
+
+/**
+ * @brief Saves and tests the code, then potentially increments the user's score based on test results.
+ * 
+ * Submits the code from the editor to the server for saving and testing. If the tests pass,
+ * the function triggers another function to increment the user's score.
+ *
+ * @param None Explicit parameters are not used as this function is triggered by an event listener.
+ * @return None This function does not return values but makes API calls and updates the UI based on responses.
+ */
 document.getElementById("saveAndTestCode").addEventListener("click", async function () {
     // Assume codeContent is the code to be tested
     const codeContent = {
@@ -407,6 +423,16 @@ document.getElementById("saveAndTestCode").addEventListener("click", async funct
     }
 });
 
+
+/**
+ * @brief Increments the user's score on the server.
+ * 
+ * This function sends a request to increment the user's score stored on the server. It assumes the user
+ * is already authenticated and their email is stored in localStorage.
+ *
+ * @param None Explicit parameters are not used as this function is triggered within other functions.
+ * @return None This function does not return values but sends a POST request and handles the response.
+ */
 function incrementScore() {
     const userEmail = localStorage.getItem('userEmail'); // Ensure this is set during login
 
