@@ -190,7 +190,15 @@
     <button onclick="sortLeaderboard('lastUpdated', 'asc')">Oldest</button>
     <button onclick="refreshLeaderboard()">
       <i class="fas fa-sync-alt"></i>
-  </button>
+  </button><br><Br>
+  <!-- <div class="pagination-controls">
+    <button onclick="loadPage(1)">First</button>
+    <button onclick="loadPage(currentPage - 1)">Prev</button>
+    <span>Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+    <button onclick="loadPage(currentPage + 1)">Next</button>
+    <button onclick="loadPage(totalPages)">Last</button>
+</div> -->
+  
 </div>
 
     <table>
@@ -209,6 +217,16 @@
 </div>
 
 <script>
+    /**
+ * @brief Dynamically loads and displays the leaderboard on page load and upon user interaction.
+ *
+ * This function fetches leaderboard data from the server when the page loads and whenever
+ * the leaderboard needs to be refreshed. It updates the HTML content to display the leaderboard
+ * entries. It also handles sorting and refreshing of the leaderboard based on user interaction.
+ *
+ * @param None
+ * @return None
+ */
 window.onload = function() {
     fetch('leaderboard') // Adjusted relative path to match the public directory
         .then(response => {
@@ -245,7 +263,17 @@ window.onload = function() {
 };
 
 
-// Fetch the updated leaderboard after the score is incremented
+/**
+ * @brief Updates the leaderboard by fetching fresh data from the server.
+ *
+ * This function makes an HTTP request to retrieve the latest leaderboard data. Upon successful
+ * retrieval, it clears the existing leaderboard entries and repopulates them with the updated data.
+ * It also updates the "Last Updated" timestamp displayed on the page to reflect the most recent update.
+ * If the fetch operation fails, it logs an error message to the console.
+ *
+ * @param None
+ * @return None
+ */
 function updateLeaderboard() {
     fetch('/leaderboard')
         .then(response => response.json())
@@ -272,6 +300,17 @@ function updateLeaderboard() {
         .catch(error => console.error('Error updating leaderboard:', error));
 }
 
+
+/**
+ * @brief Sorts the leaderboard based on specified criteria.
+ *
+ * This function sends a request to the server to fetch sorted leaderboard data according
+ * to the given field and order. It then updates the page with the new leaderboard data.
+ *
+ * @param field The field by which to sort the leaderboard.
+ * @param order The order of sorting (ascending or descending).
+ * @return None
+ */
 function sortLeaderboard(field, order) {
     fetch(`leaderboard?sort=${field}&order=${order}`)
         .then(response => response.json())
@@ -289,6 +328,18 @@ function sortLeaderboard(field, order) {
             console.error('Fetch error:', error);
         });
 }
+
+
+/**
+ * @brief Refreshes the leaderboard.
+ *
+ * Requests the latest leaderboard data from the server and updates the page.
+ * This is used to ensure the leaderboard reflects the most current data, especially
+ * after user scores have been updated.
+ *
+ * @param None
+ * @return None
+ */
 function refreshLeaderboard() {
     fetch('leaderboard')
         .then(response => response.json())
@@ -322,6 +373,47 @@ function refreshLeaderboard() {
             console.error('Fetch error:', error);
         });
 }
+
+// let currentPage = 1;
+// let totalPages = 1;
+
+// function loadPage(page) {
+//     if (page < 1 || page > totalPages) return;
+//     fetch(`leaderboard?page=${page}&limit=10`)
+//         .then(response => response.json())
+//         .then(result => {
+//             currentPage = page; // Update current page
+//             totalPages = result.totalPages; // Update total pages
+            
+//             // Update page display
+//             document.getElementById('currentPage').textContent = currentPage;
+//             document.getElementById('totalPages').textContent = totalPages;
+            
+//             // Populate the leaderboard
+//             const leaderboardBody = document.getElementById('leaderboard-body');
+//             leaderboardBody.innerHTML = ''; // Clear existing rows
+//             result.data.forEach((user, index) => {
+//                 const row = document.createElement('tr');
+//                 // ...
+//                 // Add the rest of your existing row population logic here
+//                 // ...
+//             });
+//         })
+//         .catch(error => {
+//             console.error('Fetch error:', error);
+//         });
+// }
+
+// // Attach the loadPage function to your pagination buttons
+// // Make sure this is inside or after your existing window.onload function
+// document.getElementById('firstPage').addEventListener('click', () => loadPage(1));
+// document.getElementById('prevPage').addEventListener('click', () => loadPage(currentPage - 1));
+// document.getElementById('nextPage').addEventListener('click', () => loadPage(currentPage + 1));
+// document.getElementById('lastPage').addEventListener('click', () => loadPage(totalPages));
+
+// // Call loadPage to initialize the first page
+// loadPage(1);
+
 
 
 
