@@ -38,9 +38,11 @@ This section lists the major frameworks/libraries used in the project.
 - [x] Store user's input as .py file 
 - [x] Session Management for user score incrementing 
 - [x] Create database linking 
-    - [x] Users name, email, password, scores
+    - [x] Users name, email, password, scores, date, question ID
 - [x] Store user's scores on leaderboard
     - [x] Name
     - [x] Email
     - [x] Score
-    - [x] Date
+    - [x] Date Completed
+- [x] Store question ID with user table  
+- [x] Prevent users from retaking same quiz twice
