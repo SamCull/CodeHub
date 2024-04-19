@@ -1,57 +1,65 @@
 const express = require("express");
-var bodyParser = require("body-parser");
-const { exec } = require("child_process")
-const fs = require("fs")
-const path = require("path")
+const bodyParser = require("body-parser");
+const { exec } = require("child_process");
+const fs = require("fs");
+const { JSDOM } = require('jsdom');
+const path = require("path");
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/CodeHub');
-// const WebSocket = require('ws');
-// const wss = new WebSocket.Server({ noServer: true });
-
-var db=mongoose.connection;
-db.on('error', console.log.bind(console, "connection error"));
-db.once('open', function(callback){
-	console.log("connection succeeded");
-})
-
-
-const compiler = require("compilex");
-const options = { stats: true };
-compiler.init(options);
-
-var app = express();
 const session = require('express-session');
 
+// MongoDB Connection
+mongoose.connect('mongodb://localhost:27017/CodeHub');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, "connection error"));
+db.once('open', () => {
+    console.log("connection succeeded");
+});
 
-app.use(session({
-  secret: 'your_secret_key', // Replace 'your_secret_key' with a real secret key
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: !true } // Set secure to true if you are using https
-}));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-	extended: true
-}));
+// Models
+const questionSchema = new mongoose.Schema({
+    name: String,
+    file_name: String,
+    last_updated: { type: Date, default: Date.now }
+});
 
-// Serve static files
-app.use("/codemirror-5.65.16", express.static("C:/del/Impact/codemirror-5.65.16"));
-app.use(express.static('public'));
-// Serve static files from 'static' directory
-app.use(express.static('static'));
+const Question = mongoose.model('Question', questionSchema);
 
-// Additionally serve 'java1.html' and other files from 'challenges' directory
-app.use('/challenges', express.static('challenges'));
-
-
-var userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: String,
     email: String,
     password: String,
     score: Number,
-    lastUpdated: String
+    lastUpdated: { type: Date, default: Date.now },
+    completedQuestions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Question' }] // Adding this array to track completed questions
 });
-var User = mongoose.model('User', userSchema, 'details');
+
+const User = mongoose.model('User', userSchema, 'details');
+
+// Express App Setup
+const app = express();
+app.use(session({
+    secret: 'your_secret_key', // You should replace this with an actual secret key
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Should be true in production with HTTPS
+}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/codemirror-5.65.16", express.static(path.join(__dirname, "codemirror-5.65.16")));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'static')));
+app.use('/challenges', express.static(path.join(__dirname, 'challenges')));
+
+// // Serve static files
+// app.use("/codemirror-5.65.16", express.static("C:/del/Impact/codemirror-5.65.16"));
+// app.use(express.static('public'));
+// // Serve static files from 'static' directory
+// app.use(express.static('static'));
+
+// // Additionally serve 'java1.html' and other files from 'challenges' directory
+// app.use('/challenges', express.static('challenges'));
+
+
 
 /**
  * @file app.js
@@ -81,7 +89,9 @@ app.post('/sign_up', function(req,res){
 		"name": name,
 		"email":email,
 		"password":pass,
-		 "score": 0
+		 "score": 0,
+         "lastUpdated": "",
+         "completedQuestions": [],
 
 	}
 db.collection('details').insertOne(data,function(err, collection){
@@ -124,6 +134,7 @@ app.post('/login', function(req, res) {
         }
 
         // Store user information in session
+        console.log(req.session.user); // Add this to log the user info in the session
         req.session.user = user;
         res.send({ message: "Logged in successfully", username: user.name });
     });
@@ -135,206 +146,427 @@ const usersDir = path.join(__dirname, 'users');
 if (!fs.existsSync(usersDir)){
     fs.mkdirSync(usersDir);
 }
-// ***********************************************************//
-app.post('/create-multiples-file', (req, res) => {
+
+
+
+/**
+ * @brief Handles the creation of the 'multiples.py' file and runs its unit tests.
+ * 
+ * This route captures code submitted via POST request, writes it to 'multiples.py',
+ * and executes unit tests on it. If tests pass, it checks if the user has previously
+ * completed this question and updates their score accordingly.
+ *
+ * @param req The request object, containing the submitted code and user session data.
+ * @param res The response object used to reply to the client with test results or errors.
+ * 
+ * @return Returns a JSON object with the result message and, if successful, the updated lastUpdated timestamp.
+ */
+app.post('/create-multiples-file', async (req, res) => {
     const functionCode = req.body.code || '';
-    
+    const userEmail = req.session.user.email; // Ensure the user is logged in and get their email.
+
     // Save the submitted code into the users directory
     fs.writeFileSync(path.join(usersDir, 'multiples.py'), functionCode);
 
     // Run the tests and capture output
-    exec('python -m unittest tests.test_multiples', { cwd: __dirname }, (error, stdout, stderr) => {
+    exec('python -m unittest tests.test_multiples', { cwd: __dirname }, async (error, stdout, stderr) => {
         let message;
         if (error) {
             message = "Error executing tests";
             console.error(`exec error: ${error}`);
-        } else {
-            // Attempt to parse the output
-            const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
-            const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
-            let passed, failed, total;
+            return res.status(500).json({ message });
+        } 
 
-            if (passedMatch) {
-                total = parseInt(passedMatch[1], 10);
-                passed = total;
-                failed = 0;
-            } else if (failedMatch) {
-                total = parseInt(failedMatch[1], 10);
-                failed = parseInt(failedMatch[2], 10);
-                passed = total - failed;
-            }
+        // Attempt to parse the output
+        const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
+        const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
+        let passed, failed, total;
 
-            // Format the response message
-            if (passed === total) {
-                message = `5/5: All tests passed, well done!`;
-            } else {
-                message = `${passed}/${total}: ${passed} test${passed !== 1 ? 's' : ''} passed, ${failed} failed`;
-            }
+        if (passedMatch) {
+            total = parseInt(passedMatch[1], 10);
+            passed = total;
+            failed = 0;
+        } else if (failedMatch) {
+            total = parseInt(failedMatch[1], 10);
+            failed = parseInt(failedMatch[2], 10);
+            passed = total - failed;
         }
-        
-        res.json({ message });
+
+        // Format the response message
+        if (passed === total) {
+            // Check if the quiz has already been completed by the user
+            const user = await User.findOne({ email: userEmail });
+            const question = await Question.findOne({ file_name: 'py_multiples.html' });
+            
+            if (user.completedQuestions.includes(question._id)) {
+                // User has already completed this quiz
+                message = 'You have already completed this quiz.';
+                return res.status(409).json({ message }); // Send a conflict status
+            }
+
+            // If the user hasn't completed the quiz, increment score and add quiz to completedQuestions
+            const updateResult = await User.findOneAndUpdate(
+                { email: userEmail },
+                { 
+                    $inc: { score: 1 },
+                    $push: { completedQuestions: question._id },
+                    $set: { lastUpdated: new Date() } // Update the lastUpdated date here
+                },
+                { new: true }
+            );
+            
+            
+            message = 'Score incremented successfully and quiz marked as completed.';
+            return res.json({ 
+                message,
+            lastUpdated: updateResult.lastUpdated.toISOString() });
+        } else {
+            message = `${passed}/${total}: ${passed} test(s) passed, ${failed} failed`;
+            res.json({ message });
+        }
     });
 }); //END MULTIPLES
 
-app.post('/create-fibonacci-file', (req, res) => {
+
+
+/**
+ * @brief Creates a 'fibonacci.py' file and executes its associated tests.
+ *
+ * This endpoint receives a block of code for the Fibonacci challenge through a POST request,
+ * writes it to a file, and runs the provided unit tests. It evaluates the test results, updates
+ * the user's score if all tests pass, and ensures that the question isn't marked as completed
+ * more than once. It responds with the test outcomes or any errors encountered during execution.
+ *
+ * @param req The HTTP request object that carries the client's submitted code in the body 
+ *            and the user's session data, including their email.
+ * @param res The HTTP response object for sending back the test results or error messages.
+ *
+ * @return Sends a JSON response with the outcome message. If tests pass and the quiz is not
+ *         already completed by the user, it updates the user's score and last updated timestamp
+ *         and marks the quiz as completed.
+ */
+app.post('/create-fibonacci-file', async (req, res) => {
     const functionCode = req.body.code || '';
-    
+    const userEmail = req.session.user.email; // Ensure the user is logged in and get their email.
+
     // Save the submitted code into the users directory
     fs.writeFileSync(path.join(usersDir, 'fibonacci.py'), functionCode);
 
     // Run the tests and capture output
-    exec('python -m unittest tests.test_fibonacci', { cwd: __dirname }, (error, stdout, stderr) => {
+    exec('python -m unittest tests.test_fibonacci', { cwd: __dirname }, async (error, stdout, stderr) => {
         let message;
         if (error) {
             message = "Error executing tests";
             console.error(`exec error: ${error}`);
-        } else {
-            // Attempt to parse the output
-            const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
-            const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
-            let passed, failed, total;
+            return res.status(500).json({ message });
+        } 
 
-            if (passedMatch) {
-                total = parseInt(passedMatch[1], 10);
-                passed = total;
-                failed = 0;
-            } else if (failedMatch) {
-                total = parseInt(failedMatch[1], 10);
-                failed = parseInt(failedMatch[2], 10);
-                passed = total - failed;
-            }
+        // Attempt to parse the output
+        const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
+        const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
+        let passed, failed, total;
 
-            // Format the response message
-            if (passed === total) {
-                message = `All tests passed, well done!`;
-            } else {
-                message = `${passed}/${total}: ${passed} test${passed !== 1 ? 's' : ''} passed, ${failed} failed`;
-            }
+        if (passedMatch) {
+            total = parseInt(passedMatch[1], 10);
+            passed = total;
+            failed = 0;
+        } else if (failedMatch) {
+            total = parseInt(failedMatch[1], 10);
+            failed = parseInt(failedMatch[2], 10);
+            passed = total - failed;
         }
-        
-        res.json({ message });
+
+        // Format the response message
+        if (passed === total) {
+            // Check if the quiz has already been completed by the user
+            const user = await User.findOne({ email: userEmail });
+            const question = await Question.findOne({ file_name: 'py_fibonacci.html' });
+            
+            if (user.completedQuestions.includes(question._id)) {
+                // User has already completed this quiz
+                message = 'You have already completed this quiz.';
+                return res.status(409).json({ message }); // Send a conflict status
+            }
+
+            // If the user hasn't completed the quiz, increment score and add quiz to completedQuestions
+            const updateResult = await User.findOneAndUpdate(
+                { email: userEmail },
+                { 
+                    $inc: { score: 1 },
+                    $push: { completedQuestions: question._id },
+                    $set: { lastUpdated: new Date() } // Update the lastUpdated date here
+                },
+                { new: true }
+            );
+            
+            
+            message = 'Score incremented successfully and quiz marked as completed.';
+            return res.json({ 
+                message,
+            lastUpdated: updateResult.lastUpdated.toISOString() });
+        } else {
+            message = `${passed}/${total}: ${passed} test(s) passed, ${failed} failed`;
+            res.json({ message });
+        }
     });
 }); //END FIBONACCI
 
-app.post('/create-smallestMultiple-file', (req, res) => {
+
+/**
+ * @brief Handles the creation and testing of 'smallestMultiple.py'.
+ *
+ * This endpoint processes a POST request containing Python code aimed at solving the smallest multiple problem. 
+ * It saves the code into a user-specific file and runs predefined unit tests against it. Based on the results of 
+ * the tests, it constructs a message indicating success or failure and updates the user's score if all tests pass.
+ * It also ensures that the quiz is not marked completed more than once per user.
+ *
+ * @param req The HTTP request object containing the user's code and their session information.
+ * @param res The HTTP response object for sending back the test outcomes and any additional messages.
+ *
+ * @return It returns a JSON object containing the result of the test execution, which includes a message detailing
+ *         the number of tests passed and failed, or if all tests are passed, it increments the user's score and marks
+ *         the question as completed along with the timestamp of the last update.
+ */
+app.post('/create-smallestMultiple-file', async (req, res) => {
     const functionCode = req.body.code || '';
-    
-    // Save the submitted code into the users directory as 'smallestMultiple.py'
+    const userEmail = req.session.user.email; // Ensure the user is logged in and get their email.
+
+    // Save the submitted code into the users directory
     fs.writeFileSync(path.join(usersDir, 'smallestMultiple.py'), functionCode);
 
     // Run the tests and capture output
-    exec('python -m unittest tests.test_smallestMultiple', { cwd: __dirname }, (error, stdout, stderr) => {
+    exec('python -m unittest tests.test_smallestMultiple', { cwd: __dirname }, async (error, stdout, stderr) => {
         let message;
         if (error) {
             message = "Error executing tests";
             console.error(`exec error: ${error}`);
-        } else {
-            // Parse the output for test results
-            const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
-            const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
-            let passed, failed, total;
+            return res.status(500).json({ message });
+        } 
 
-            if (passedMatch) {
-                total = parseInt(passedMatch[1], 10);
-                passed = total;
-                failed = 0;
-                // If all tests passed, optionally increment the user's score
-                // Increment score logic here (similar to previous challenges)
-            } else if (failedMatch) {
-                total = parseInt(failedMatch[1], 10);
-                failed = parseInt(failedMatch[2], 10);
-                passed = total - failed;
-            }
+        // Attempt to parse the output
+        const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
+        const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
+        let passed, failed, total;
 
-            // Format the response message
-            if (passed === total) {
-                message = `All tests passed, well done!`;
-            } else {
-                message = `${passed}/${total}: ${passed} test${passed !== 1 ? 's' : ''} passed, ${failed} failed`;
-            }
+        if (passedMatch) {
+            total = parseInt(passedMatch[1], 10);
+            passed = total;
+            failed = 0;
+        } else if (failedMatch) {
+            total = parseInt(failedMatch[1], 10);
+            failed = parseInt(failedMatch[2], 10);
+            passed = total - failed;
         }
-        
-        res.json({ message });
+
+        // Format the response message
+        if (passed === total) {
+            // Check if the quiz has already been completed by the user
+            const user = await User.findOne({ email: userEmail });
+            const question = await Question.findOne({ file_name: 'py_smallestMultiple.html' });
+            
+            if (user.completedQuestions.includes(question._id)) {
+                // User has already completed this quiz
+                message = 'You have already completed this quiz.';
+                return res.status(409).json({ message }); // Send a conflict status
+            }
+
+            // If the user hasn't completed the quiz, increment score and add quiz to completedQuestions
+            const updateResult = await User.findOneAndUpdate(
+                { email: userEmail },
+                { 
+                    $inc: { score: 1 },
+                    $push: { completedQuestions: question._id },
+                    $set: { lastUpdated: new Date() } // Update the lastUpdated date here
+                },
+                { new: true }
+            );
+            
+            const formattedDate = updateResult.lastUpdated.toISOString().substring(0, 10);
+            
+            message = 'Score incremented successfully and quiz marked as completed.';
+            return res.json({ 
+                message,
+            lastUpdated: formattedDate });
+        } else {
+            message = `${passed}/${total}: ${passed} test(s) passed, ${failed} failed`;
+            res.json({ message });
+        }
     });
 }); // END SMALLEST MULTIPLE
 
-app.post('/create-prime-file', (req, res) => {
+
+
+
+/**
+ * @brief Endpoint to create a 'prime.py' file from submitted code and execute its tests.
+ *
+ * This POST endpoint takes Python code aimed at solving prime number related challenges from the request body.
+ * It writes the code to a 'prime.py' file within the user's directory and initiates the test suite specific to prime numbers.
+ * Should all tests pass and the challenge has not been previously completed by the user, the user's score is incremented.
+ * It also ensures that a quiz cannot be completed more than once by the same user by checking against completedQuestions.
+ *
+ * @param req The HTTP request object, including the user's session for email and submitted code.
+ * @param res The HTTP response object used for replying with the status of test execution and user score updates.
+ *
+ * @return On success, a JSON response is sent with a success message and last updated timestamp. On failure, it sends an
+ *         error message with details of the failed tests or any server errors that occurred during test execution.
+ */
+app.post('/create-prime-file', async (req, res) => {
     const functionCode = req.body.code || '';
-    
-    // Save the submitted code into the users directory as 'prime.py'
+    const userEmail = req.session.user.email; // Ensure the user is logged in and get their email.
+
+    // Save the submitted code into the users directory
     fs.writeFileSync(path.join(usersDir, 'prime.py'), functionCode);
 
     // Run the tests and capture output
-    exec('python -m unittest tests.test_prime', { cwd: __dirname }, (error, stdout, stderr) => {
+    exec('python -m unittest tests.test_prime', { cwd: __dirname }, async (error, stdout, stderr) => {
         let message;
         if (error) {
             message = "Error executing tests";
             console.error(`exec error: ${error}`);
-        } else {
-            // Attempt to parse the output
-            const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
-            const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
-            let passed, failed, total;
+            return res.status(500).json({ message });
+        } 
 
-            if (passedMatch) {
-                total = parseInt(passedMatch[1], 10);
-                passed = total;
-                failed = 0;
-            } else if (failedMatch) {
-                total = parseInt(failedMatch[1], 10);
-                failed = parseInt(failedMatch[2], 10);
-                passed = total - failed;
-            }
+        // Attempt to parse the output
+        const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
+        const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
+        let passed, failed, total;
 
-            // Format the response message
-            if (passed === total) {
-                message = `All tests passed, well done!`;
-            } else {
-                message = `${passed}/${total}: ${passed} test${passed !== 1 ? 's' : ''} passed, ${failed} failed`;
-            }
+        if (passedMatch) {
+            total = parseInt(passedMatch[1], 10);
+            passed = total;
+            failed = 0;
+        } else if (failedMatch) {
+            total = parseInt(failedMatch[1], 10);
+            failed = parseInt(failedMatch[2], 10);
+            passed = total - failed;
         }
-        
-        res.json({ message });
+
+        // Format the response message
+        if (passed === total) {
+            // Check if the quiz has already been completed by the user
+            const user = await User.findOne({ email: userEmail });
+            const question = await Question.findOne({ file_name: 'py_prime.html' });
+            
+            if (user.completedQuestions.includes(question._id)) {
+                // User has already completed this quiz
+                message = 'You have already completed this quiz.';
+                return res.status(409).json({ message }); // Send a conflict status
+            }
+
+            // If the user hasn't completed the quiz, increment score and add quiz to completedQuestions
+            const updateResult = await User.findOneAndUpdate(
+                { email: userEmail },
+                { 
+                    $inc: { score: 1 },
+                    $push: { completedQuestions: question._id },
+                    $set: { lastUpdated: new Date() } // Update the lastUpdated date here
+                },
+                { new: true }
+            );
+            
+            
+            message = 'Score incremented successfully and quiz marked as completed.';
+            return res.json({ 
+                message,
+            lastUpdated: updateResult.lastUpdated.toISOString() });
+        } else {
+            message = `${passed}/${total}: ${passed} test(s) passed, ${failed} failed`;
+            res.json({ message });
+        }
     });
 }); // END 10,0001ST PRIME
 
-app.post('/create-palindrome-file', (req, res) => {
+
+
+/**
+ * @brief POST endpoint to evaluate palindrome code submissions.
+ *
+ * Receives code from the client intended to solve a palindrome-related challenge and 
+ * writes it to a Python file. It runs a test suite for palindrome validation and 
+ * provides feedback based on the test results. If the tests are passed and the challenge 
+ * hasn't been previously solved by the user, it updates the user's score and records 
+ * the challenge as completed. The route ensures each challenge is only completed once 
+ * per user to maintain integrity of the scoring system.
+ *
+ * @param req The HTTP request object containing the user's code and session data.
+ * @param res The HTTP response object for sending back the test results to the client.
+ *
+ * @return Responds with a JSON object detailing the outcome of the test execution.
+ *         If all tests pass and the challenge has not been completed, it updates the 
+ *         user's score and sets the challenge as completed with the current timestamp.
+ */
+
+app.post('/create-palindrome-file', async (req, res) => {
     const functionCode = req.body.code || '';
-    
+    const userEmail = req.session.user.email; // Ensure the user is logged in and get their email.
+
     // Save the submitted code into the users directory
     fs.writeFileSync(path.join(usersDir, 'palindrome.py'), functionCode);
 
     // Run the tests and capture output
-    exec('python -m unittest tests.test_palindrome', { cwd: __dirname }, (error, stdout, stderr) => {
+    exec('python -m unittest tests.test_palindrome', { cwd: __dirname }, async (error, stdout, stderr) => {
         let message;
         if (error) {
             message = "Error executing tests";
             console.error(`exec error: ${error}`);
-        } else {
-            // Attempt to parse the output
-            const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
-            const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
-            let passed, failed, total;
+            return res.status(500).json({ message });
+        } 
 
-            if (passedMatch) {
-                total = parseInt(passedMatch[1], 10);
-                passed = total;
-                failed = 0;
-            } else if (failedMatch) {
-                total = parseInt(failedMatch[1], 10);
-                failed = parseInt(failedMatch[2], 10);
-                passed = total - failed;
-            }
+        // Attempt to parse the output
+        const passedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nOK/);
+        const failedMatch = stdout.match(/Ran (\d+) tests? in .*\n\nFAILED \(failures=(\d+)\)/);
+        let passed, failed, total;
 
-            // Format the response message
-            if (passed === total) {
-                message = `5/5: All tests passed, well done!`;
-            } else {
-                message = `${passed}/${total}: ${passed} test${passed !== 1 ? 's' : ''} passed, ${failed} failed`;
-            }
+        if (passedMatch) {
+            total = parseInt(passedMatch[1], 10);
+            passed = total;
+            failed = 0;
+        } else if (failedMatch) {
+            total = parseInt(failedMatch[1], 10);
+            failed = parseInt(failedMatch[2], 10);
+            passed = total - failed;
         }
-        
-        res.json({ message });
+
+        // Format the response message
+        if (passed === total) {
+            // Check if the quiz has already been completed by the user
+            const user = await User.findOne({ email: userEmail });
+            const question = await Question.findOne({ file_name: 'py_palindrome.html' });
+            
+            if (user.completedQuestions.includes(question._id)) {
+                // User has already completed this quiz
+                message = 'You have already completed this quiz.';
+                return res.status(409).json({ message }); // Send a conflict status
+            }
+
+            // If the user hasn't completed the quiz, increment score and add quiz to completedQuestions
+            const updateResult = await User.findOneAndUpdate(
+                { email: userEmail },
+                { 
+                    $inc: { score: 1 },
+                    $push: { completedQuestions: question._id },
+                    $set: { lastUpdated: new Date() } // Update the lastUpdated date here
+                },
+                { new: true }
+            );
+
+            
+            if (updateResult && updateResult.lastUpdated) {
+                // Ensure lastUpdated is a Date object
+                const d = updateResult.lastUpdated;
+                const formattedDate = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+
+                
+                return res.json({
+                  message: 'Score incremented successfully and quiz marked as completed.',
+                  lastUpdated: formattedDate // Sending the formatted date string
+                });
+            }
+        } else {
+            message = `${passed}/${total}: ${passed} test(s) passed, ${failed} failed`;
+            res.json({ message });
+        }
     });
 }); //END PALINDRONE
 
@@ -365,14 +597,13 @@ app.post('/increment-score', function(req, res) {
     }
 
     const userEmail = req.session.user.email;
-    const now = new Date();
-    const dateString = now.toISOString().substring(0, 10); // Format as 'YYYY-MM-DD'
+    const dateString = new Date().toISOString().substring(0, 10); // 'YYYY-MM-DD'
 
     db.collection('details').updateOne(
         { email: userEmail },
         { 
             $inc: { score: 1 },
-            $set: { lastUpdated: dateString } // Set the last updated date
+            $set: { lastUpdated: dateString } // Set the last updated date as a string
         },
         function(err, result) {
             if (err) {
@@ -381,12 +612,25 @@ app.post('/increment-score', function(req, res) {
             } else if (result.modifiedCount === 0) {
                 res.status(404).json({ message: 'User not found' });
             } else {
-                // Send the date back in the response
-                res.json({ message: 'All tests passed. Score incremented successfully!', date: dateString });
+                res.json({
+                    message: 'All tests passed. Score incremented successfully!',
+                    lastUpdated: dateString // Send the date back in the response
+                });
             }
         }
     );
 });
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**
@@ -507,8 +751,119 @@ app.post("/compile", function (req, res) {
         console.log("error")
     }
 })
+// When adding new files
+// db.once('open', async function () {
+//     console.log("connection succeeded");
+//     // The function can now be called since it's defined at the top level.
+//     try {
+//         await insertQuestionsFromHTML();
+//         console.log("Questions inserted successfully");
+//     } catch (error) {
+//         console.error("Error inserting questions: ", error);
+//     }
+// });
+db.once('open', function () {
+    // Inside db.once('open', ...)
+if (process.env.RUN_SETUP) {
+    insertQuestionsFromHTML();
+}
+
+    console.log("Database connection successfully opened.");
+});
 
 
+// async function insertQuestionsFromHTML() {
+//     const htmlFilePaths = ['challenges/./py_multiples.html', 'challenges/./py_prime.html' /* ... other file paths ... */];
+//     for (const filePath of htmlFilePaths) {
+//         const htmlContent = fs.readFileSync(filePath, 'utf8');
+//         const dom = new JSDOM(htmlContent);
+//         const title = dom.window.document.title; // Placeholder for actual title extraction logic
+//         const newQuestion = new Question({
+//             name: title,
+//             file_name: path.basename(filePath),
+//             last_updated: new Date()
+//         });
+//         await newQuestion.save();
+//     }
+//     console.log("Questions inserted successfully");
+// }
+
+
+
+async function insertQuestionsFromHTML() {
+    // Assuming the 'challenges' folder is at the same level as your app.js in the project directory
+    const baseDir = path.join(__dirname, 'challenges');  // __dirname is the directory of the current module, i.e., app.js
+    const htmlFilePaths = [
+        path.join(baseDir, 'py_multiples.html'),
+        path.join(baseDir, 'py_prime.html'),
+        path.join(baseDir, 'py_palindrome.html'),
+        path.join(baseDir, 'py_smallestMultiple.html'),
+        path.join(baseDir, 'py_fibonacci.html'),
+        // Add other files as needed
+    ];
+
+    for (const filePath of htmlFilePaths) {
+        try {
+            const htmlContent = fs.readFileSync(filePath, 'utf8');
+            const dom = new JSDOM(htmlContent);
+            const title = dom.window.document.title; // Assuming title is stored in the <title> tag
+
+            const filter = { file_name: path.basename(filePath) };
+            const update = {
+                name: title,  // Or modify as needed for your friendly title logic
+                last_updated: new Date()
+            };
+            const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+            // Find the document and update it if it exists, insert it if it doesn't
+            const result = await Question.findOneAndUpdate(filter, update, options);
+            console.log(`Processed question from ${path.basename(filePath)}: ${result}`);
+        } catch (err) {
+            console.error(`Failed to process ${filePath}: ${err.message}`);
+        }
+    }
+}
+
+/**
+ * @brief Handles quiz submission by updating the user's completed questions.
+ *
+ * This endpoint processes quiz submissions. It ensures that the user is logged in
+ * and has provided the filename of the quiz being submitted. It looks up the quiz by filename
+ * to find its unique identifier, and then it updates the user's record to include this quiz
+ * in their list of completed questions.
+ *
+ * @param req The HTTP request object, containing the user's session data and the quiz file name.
+ * @param res The HTTP response object used to send back the result of the submission attempt.
+ *
+ * @return On success, sends a confirmation message that the quiz was completed and recorded.
+ *         On failure, due to either a missing quiz or a server error, sends an appropriate 
+ *         HTTP status code and error message.
+ */
+
+app.post('/quiz-submission', async (req, res) => {
+    const userEmail = req.session.user.email; // Ensure the user is logged in and get their email
+    const quizFileName = req.body.quizFileName; // You need to pass this from the frontend
+
+    try {
+        // Find the quiz in the `questions` collection to get its ID
+        const quiz = await Question.findOne({ file_name: quizFileName });
+
+        if (!quiz) {
+            return res.status(404).send('Quiz not found');
+        }
+
+        // Add the quiz ID to the user's `completedQuestions`
+        await User.updateOne(
+            { email: userEmail },
+            { $push: { completedQuestions: quiz._id } }
+        );
+
+        res.send('Quiz completed and recorded successfully');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred while recording the quiz completion');
+    }
+});
 
 /**
  * @file app.js
@@ -577,7 +932,35 @@ app.get('/leaderboard', async (req, res) => {
 });
 
 
+/**
+ * @brief Terminates the user session to log out the user.
+ *
+ * This route handles user logout requests. It destroys the current user session, effectively
+ * logging the user out of the application. If an error occurs during this process, it logs the
+ * error and returns an appropriate message to the client. Otherwise, it confirms successful
+ * logout.
+ *
+ * @param req The HTTP request object that provides access to the user's session.
+ * @param res The HTTP response object used to send back the logout status.
+ *
+ * @return Sends a success message if the logout is successful, otherwise sends an error message.
+ */
+app.post('/logout', function(req, res) {
+    req.session.destroy(function(err) {
+      if (err) {
+        console.log(err);
+        res.status(500).send('Could not log out, please try again.');
+      } else {
+        // Destroy the session and send a response back to the client
+        res.send('Logged out successfully.');
+      }
+    });
+  });
+  
 // Additional routes go here
 
 // Listening on port 5500
 app.listen(5500, () => console.log("Server listening at port 5500"));
+
+
+module.exports = app;
