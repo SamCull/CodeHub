@@ -44,5 +44,5 @@ This section lists the major frameworks/libraries used in the project.
     - [x] Email
     - [x] Score
     - [x] Date Completed
-- [x] Store question ID with user table  
+- [x] Store question ID with user table after completing a challenge
 - [x] Prevent users from retaking same quiz twice
