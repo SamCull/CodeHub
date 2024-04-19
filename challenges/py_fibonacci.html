@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J Challenges</title>
+  <title>Python Fibonacci</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
   rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
@@ -272,38 +272,7 @@ option.addEventListener("change", function () {
 function loginUser(email) {
     localStorage.setItem('userEmail', email); 
 }
-function incrementScore() {
-  // Get the user's email from localStorage
-  const userEmail = localStorage.getItem('userEmail');
 
-  if (!userEmail) {
-    console.error('User email is not found in localStorage.');
-    return;
-  }
-//
-// Function to 
-
-//
-  // Send the POST request to the server to increment the score
-  fetch('http://localhost:5500/increment-score', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ email: userEmail })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.message) {
-      alert('Score incremented.');
-    } else {
-      alert('Could not increment score.');
-    }
-  })
-  .catch(error => {
-    console.error('Error incrementing score:', error);
-  });
-}
 
 
 
@@ -356,8 +325,8 @@ run.addEventListener("click", async function () {
     })
     .then(response => response.json())
     .then(data => {
-        if(data.message === 'All tests passed. Score incremented successfully!'){
-            alert('All tests passed. Score incremented successfully!');
+        if(data.message === 'All tests passed. Score incremented successfully!!!!!'){
+            alert('All tests passed. Score incremented successfully!!!!!');
         }
     })
     .catch(error => console.error('Error incrementing score:', error));
@@ -376,10 +345,11 @@ function loginUser(email) {
     // Redirect to the page with the coding challenge or perform other login success actions
 }
 
+// The JavaScript code from the client-side (presumably in py_fibonacci.html or similar)
 
 document.getElementById("saveAndTestCode").addEventListener("click", async function () {
     const codeContent = {
-        code: editor.getValue()
+        code: editor.getValue(),
     };
 
     try {
@@ -391,7 +361,7 @@ document.getElementById("saveAndTestCode").addEventListener("click", async funct
         const result = await response.json();
 
         if (result.message.includes('All tests passed')) {
-            incrementScore();  // Call incrementScore function if tests passed
+            await incrementScore('py_fibonacci.html');  // Pass the quiz file name here
         } else {
             alert(result.message);  // Show the result message
         }
@@ -401,44 +371,25 @@ document.getElementById("saveAndTestCode").addEventListener("click", async funct
     }
 });
 
-/**
- * @brief Increments the user's score on the server.
- * 
- * If the user is logged in, this function sends a request to the server to increment the user's
- * score. This typically follows successful code submission or passing of tests.
- *
- * @param None
- * @return None
- */
-function incrementScore() {
-    const userEmail = localStorage.getItem('userEmail'); // Ensure this is set during login
 
-    if (!userEmail) {
-        console.error('User email is not found in localStorage.');
-        return;
+async function incrementScore(quizFileName) {
+    try {
+        // Include the quiz file name when sending the request to increment the score
+        const scoreIncrementResponse = await fetch('/increment-score', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ quizFileName }),  // Send the quiz file name
+            credentials: 'include',
+        });
+        const scoreIncrementResult = await scoreIncrementResponse.json();
+
+        alert(scoreIncrementResult.message);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while incrementing the score.');
     }
-// these work 
-    fetch('/increment-score', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: userEmail }), // Use session or a secure method in real apps
-        credentials: 'include' // Important for session cookies if authentication is session-based
-    })
-    .then(response => response.json())
-    .then(data => {
-        if(data.message) {
-            console.log('Score incremented successfully.');
-            alert('All tests have passed. Score incremented successfully!');
-        } else {
-            console.error('Failed to increment score.');
-        }
-    })
-    .catch(error => {
-        console.error('Error incrementing score:', error);
-    });
 }
+
 
 </script>
 </html>
