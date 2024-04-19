@@ -1,15 +1,3 @@
-/**
-* Template Name: Impact
-* Updated: Jan 09 2024 with Bootstrap v5.3.2
-* Template URL: https://bootstrapmade.com/impact-bootstrap-business-website-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
-
-/*--------------------------------------------------------------
-# Set main reusable colors and fonts using CSS variables
-# Learn more about CSS variables at https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties
---------------------------------------------------------------*/
 /* Fonts */
 :root {
   --font-default: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -109,6 +97,7 @@ section {
   background-color: var(--color-primary);
 }
 
+/* Java Challenges */
 .breadcrumbs .page-header h2 {
   font-size: 56px;
   font-weight: 500;
@@ -121,11 +110,11 @@ section {
 }
 
 .breadcrumbs nav {
-  background-color: #f6f6f6;
+  background-color: #e1e1e1;
   padding: 20px 0;
 }
 
-.breadcrumbs nav ol {
+.breadcrumbs nav ol { /* Home / ...  */
   display: flex;
   flex-wrap: wrap;
   list-style: none;
@@ -136,17 +125,21 @@ section {
   color: var(--color-default);
 }
 
+/* Home button*/
 .breadcrumbs nav ol a {
   color: var(--color-primary);
   transition: 0.3s;
+
 }
 
 .breadcrumbs nav ol a:hover {
   text-decoration: underline;
+  
 }
 
 .breadcrumbs nav ol li+li {
   padding-left: 10px;
+  
 }
 
 .breadcrumbs nav ol li+li::before {
@@ -154,6 +147,7 @@ section {
   padding-right: 10px;
   color: var(--color-secondary);
   content: "/";
+  
 }
 
 /*--------------------------------------------------------------
@@ -818,7 +812,23 @@ section {
   padding: 100px 60px;
   border-radius: 15px;
   overflow: hidden;
+
 }
+
+.container ol li { /* What page it is */
+  color: black;
+}
+
+
+.container ol li a { /* Home / */
+  color: #008374b3; 
+}
+
+.container ol li a:hover {
+  color: black; 
+}
+
+
 
 .call-to-action h3 {
   color: #fff;
@@ -855,7 +865,7 @@ section {
   animation-timing-function: steps;
   opacity: 1;
   border-radius: 50%;
-  border: 5px solid rgba(0, 131, 116, 0.7);
+  border: 5px solid #008374b3;
   top: -15%;
   left: -15%;
   background: rgba(198, 16, 0, 0);
@@ -1147,6 +1157,7 @@ section {
   }
 }
 
+
 .portfolio .portfolio-wrap {
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -1154,13 +1165,23 @@ section {
   overflow: hidden;
 }
 
-.portfolio .portfolio-wrap img {
+/* .portfolio .portfolio-wrap img {
   transition: 0.3s;
   position: relative;
   z-index: 1;
+} */
+.portfolio-wrap img {
+  width: 100%;       /* ensures the image takes up the full width of the box */
+  height: 100%;      /* ensures the image takes up the full height of the box */
+  object-fit: cover; /* ensures the image covers the box without stretching */
+  transition: 0.3s;
+  position: relative;
+  z-index: 0;
 }
 
-.portfolio .portfolio-wrap .portfolio-info {
+
+
+.portfolio .portfolio-wrap .portfolio-info { /* Name of language */
   padding: 25px 20px;
   background-color: #fff;
   position: relative;
@@ -2667,3 +2688,98 @@ section {
 .footer .credits a {
   color: #fff;
 }
+/* Add this CSS to your existing stylesheet or create a new one */
+
+.challenges-section {
+  background-color: #f8f9fa;  /* Light grey background for the section */
+  padding: 40px 0;            /* Padding around the section for better spacing */
+  border-top: 2px solid #eee; /* Subtle top border */
+  border-bottom: 2px solid #eee; /* Subtle bottom border */
+}
+.challenges-section h3 {
+  color: black;             /* A darker blue for heading for better visibility */
+  font-weight: 600;           /* Making the font a bit bolder */
+  padding-bottom: 20px;       /* Space below the heading */
+  border-bottom: 1px solid #ccc; /* Subtle line under the heading */
+  margin-bottom: 20px;        /* Margin below the border */
+}
+
+.challenges-list {
+  background-color: #f8f9fa; /* Background color for the challenges section */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle box shadow */
+  text-align: center; /* Center the text within the challenges list */
+  max-width: 400px; /* Adjust the max-width as needed */
+  margin: auto; /* Center the challenges list horizontally */
+}
+
+.challenges-list h3 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  text-align: center; /* Center the h3 tag text */
+}
+
+.challenges-section ul {
+  list-style: none;           /* Removing default list style */
+  padding: 0;                 /* Removing default padding */
+}
+
+.challenges-section li {
+  padding: 10px 0;            /* Padding for each list item */
+  border-bottom: 1px solid #ddd; /* Border bottom for each item */
+}
+.challenges-section a {
+  color: #008374;             /* Bootstrap primary blue for links */
+  text-decoration: none;   
+  font-weight: bold;   /* No underline */
+  transition: color 0.3s;     /* Smooth transition for hover effect */
+}
+
+.challenges-section a:hover {
+  color: #008374;             /* Darker blue on hover */
+}
+
+.gradient-custom {
+  /* fallback for old browsers */
+  background: #6a11cb;
+  
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+  
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown ul {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown:hover ul {
+    display: block;
+  }
+  
+  /* Style dropdown links for Logout */
+  .dropdown ul a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .dropdown ul a:hover {
+    background-color: #f1f1f1;
+  }
+
+  
