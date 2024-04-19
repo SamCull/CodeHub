@@ -217,7 +217,7 @@
 </div>
 
 <script>
-    /**
+/**
  * @brief Dynamically loads and displays the leaderboard on page load and upon user interaction.
  *
  * This function fetches leaderboard data from the server when the page loads and whenever
@@ -282,14 +282,13 @@ function updateLeaderboard() {
             leaderboardBody.innerHTML = ''; // Clear existing rows
 
             // Populate leaderboard with fetched data
-            data.forEach(user => {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>${user.name}</td>
-                                 <td>${user.email}</td>
-                                 <td>${user.score}</td>
-                                 <td>${user.lastUpdated}</td>`; // Include the lastUpdated field
-                leaderboardBody.appendChild(row);
-            });
+            data.forEach((user, index) => {
+    // Format the date from the server to 'YYYY-MM-DD'
+    const formattedDate = new Date(user.lastUpdated).toISOString().substring(0, 10);
+    const row = document.createElement('tr');
+    row.innerHTML = `<td>${user.name}</td><td>${user.email}</td><td>${user.score}</td><td>${formattedDate}</td>`; // Use formattedDate here
+    leaderboardBody.appendChild(row);
+});
 
             // Update the "Last Updated" timestamp
             const lastUpdatedTimeSpan = document.getElementById('last-updated-time');

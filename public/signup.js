@@ -1,3 +1,14 @@
+/**
+ * @brief Handles the user signup process.
+ *
+ * This function takes username, email, and password from the signup form,
+ * sends these details to the server to create a new user account, and manages the response.
+ * On successful account creation, the user is redirected to a success page. If there's an error,
+ * it provides feedback to the user.
+ *
+ * @param None
+ * @return None
+ */
 document.getElementById('signup-form').addEventListener('submit', function(e) {
     e.preventDefault();
   
