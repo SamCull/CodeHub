@@ -46,4 +46,43 @@ This section lists the major frameworks/libraries used in the project.
     - [x] Date Completed
 - [x] Store question ID with user table after completing a challenge
 - [x] Prevent users from retaking same quiz twice
-- [x] Doxygen documentation created 
+- [x] Doxygen documentation created
+
+## Imports
+├── @types/bcryptjs@2.4.6
+
+├── @types/node@20.11.16
+
+├── axios@1.6.7
+
+├── bcrypt@5.1.1
+
+├── bcryptjs@2.4.3
+
+├── body-parser@1.20.2
+
+├── compilex@0.7.4
+
+├── connect-mongo@5.1.0
+
+├── connect-mongodb-session@2.2.0
+
+├── cors@2.8.5
+
+├── express-session@1.18.0
+
+├── express@4.18.2
+
+├── jsdom@24.0.0
+
+├── jsonwebtoken@9.0.2
+
+├── mongoose@8.1.1
+
+├── next-auth@4.24.5
+
+├── nodemon@3.0.3
+
+├── python-shell@5.0.0
+
+└── ws@8.16.0
